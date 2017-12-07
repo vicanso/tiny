@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "vicanso.compress";
+option java_outer_classname = "CompressProto";
+
+package compress;
+
+// 数据类型，图片、文本
+enum DataType {
+  IMAGE = 0;
+  TEXT = 1;
+}
+
+// 压缩算法
+enum Algorithm {
+  GZIP = 0;
+  BROTLI = 1;
+}
+
+// The greeting service definition.
+service Compress {
+  // Sends a greeting
+  rpc Do (CompressRequest) returns (CompressReply) {}
+}
+
+// The request message containing the user's name.
+message CompressRequest {
+  bytes data = 1;
+}
+
+// The response message containing the greetings
+message CompressReply {
+  DataType type = 1;
+  Algorithm algorithm = 2;
+  bytes data = 3;
+}
