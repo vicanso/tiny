@@ -1,27 +1,5 @@
 # compression
 
-## 压缩对比
-
-| 文件名 | 算法 | 原文件大小 | 压缩后大小 | 压缩比 | 耗时(ms)
-| font-awesome.css | brotli | 31000 | 6569 | 21% | 22 |
-| font-awesome.css | gzip | 31000 | 6968 | 22% | 2 |
-| main.js | brotli | 486495 | 109138 | 22% | 128 |
-| main.js | gzip | 486495 | 120284 | 24% | 24 |
-| react.js | brotli | 6617 | 2683 | 40% | 9 |
-| react.js | gzip | 6617 | 2836 | 42% | 1 |
-| styles.css | brotli | 115554 | 20510 | 17% | 28 |
-| styles.css | gzip | 115554 | 22804 | 19% | 6 |
-| vue.js | brotli | 86676 | 30323 | 34% | 32 |
-| vue.js | gzip | 86676 | 31819 | 36% | 8 |
-
-
-| 原始数据 | brotli(字节) | gzip(字节) | brotli(耗时)  | gzip(耗时)
-| 726342 | 169223 | 184711 | 219 | 41
-
-从上面的数据可以看出，使用`brotli(Quality:9)`比`gzip`减少了`15488`字节的数据，压缩时间差不多是`5`倍，但总体的压缩时长还算是比较短。
-
-注：如果`brotli`设置`Quality:10`比`gzip`减少了`25455`字节的数据，但是压缩的时间差不多是`50`倍，如果追求更高的压缩率，可以调整`Quality`
-
 ## 使用建议
 
 在考虑系统是否需要增加`brotli`压缩时，先收集当前用户支持`brotli`的占比，我们的系统大概有`50%`的用户是支持的，因此增加`brotli`的支持能减少部分带宽的占用（主要就是省钱），下面是我们现行的处理方式：
@@ -32,4 +10,16 @@
 
 ## poroto gen
 
+### gen go 
+
+```bash
 protoc -I compress/ compress/compress.proto --go_out=plugins=grpc:compress
+```
+
+### gen nodejs
+
+```bash
+npm install -g grpc-tools
+
+grpc_tools_node_protoc --js_out=import_style=commonjs,binary:node --grpc_out=node --plugin=protoc-gen-grpc=`which grpc_tools_node_protoc_plugin` compress/compress.proto
+```

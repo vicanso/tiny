@@ -6,32 +6,39 @@ option java_outer_classname = "CompressProto";
 
 package compress;
 
-// 数据类型，图片、文本
-enum DataType {
-  IMAGE = 0;
-  TEXT = 1;
-}
-
-// 压缩算法
-enum Algorithm {
+// 压缩类型
+enum Type {
+  // GZIP BROTLI用于文本的压缩
   GZIP = 0;
   BROTLI = 1;
+  WEBP = 2;
+  JPEG = 3;
+  PNG = 4;
 }
 
-// The greeting service definition.
+// The compress service definition.
 service Compress {
-  // Sends a greeting
+  // dom compress 
   rpc Do (CompressRequest) returns (CompressReply) {}
 }
 
 // The request message containing the user's name.
 message CompressRequest {
-  bytes data = 1;
+  // 压缩类型
+  Type type = 1;
+  // 数据
+  bytes data = 2;
+  // 图片类型
+  string imageType = 3;
+  // 图片宽度
+  uint32 width = 4;
+  // 图片高度
+  uint32 height = 5;
+  // 图片质量
+  uint32 quality = 6;
 }
 
 // The response message containing the greetings
 message CompressReply {
-  DataType type = 1;
-  Algorithm algorithm = 2;
-  bytes data = 3;
+  bytes data = 1;
 }
