@@ -18,7 +18,7 @@ enum Type {
 
 // The compress service definition.
 service Compress {
-  // dom compress 
+  // do compress 
   rpc Do (CompressRequest) returns (CompressReply) {}
 }
 

@@ -1,18 +1,70 @@
 const grpc = require('grpc');
+const path = require('path');
 const fs = require('fs');
 
-const compress = require('./compress/compress_pb');
-const services = require('./compress/compress_grpc_pb');
+const protoFile = path.join(__dirname, '../proto/compress.proto');
+const jsFile = path.join(__dirname, '../assets/lodash.min.js');
+const imgFile = path.join(__dirname, '../assets/banner.png');
+const distPath = path.join(__dirname, '../assets/dist');
 
-const buf = fs.readFileSync('../assets/lodash.min.js');
+const compress = grpc.load(protoFile).compress;
+const client = new compress.Compress('127.0.0.1:50051', grpc.credentials.createInsecure());
 
-const client = new services.CompressClient('127.0.0.1:50051', grpc.credentials.createInsecure());
+function doRequest(request) {
+  return new Promise((resolve, reject) => {
+    client.do(request, (err, res) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(res);
+      }
+    });
+  });
+}
 
+function doBrotli() {
+  const buf = fs.readFileSync(jsFile);
+  const request = new compress.CompressRequest();
+  request.setType(compress.Type.BROTLI);
+  request.setData(new Uint8Array(buf));
+  doRequest(request).then((res) => {
+    fs.writeFileSync(`${distPath}/lodash.br`, res.data);
+  }).catch(console.error);
+}
 
-const request = new compress.CompressRequest();
-request.setType(compress.Type.BROTLI);
-request.setData(new Uint8Array(buf));
-client.do(request, (err, res) => {
-  console.dir(err);
-  console.dir(res.getData().length);
-});
+function doGzip() {
+  const buf = fs.readFileSync(jsFile);
+  const request = new compress.CompressRequest();
+  request.setType(compress.Type.GZIP);
+  request.setData(new Uint8Array(buf));
+  doRequest(request).then((res) => {
+    fs.writeFileSync(`${distPath}/lodash.zip`, res.data);
+  }).catch(console.error);
+}
+
+function doWebp() {
+  const buf = fs.readFileSync(imgFile);
+  const request = new compress.CompressRequest();
+  request.setType(compress.Type.WEBP);
+  request.setData(new Uint8Array(buf));
+  request.setQuality(75);
+  doRequest(request).then((res) => {
+    fs.writeFileSync(`${distPath}/banner.webp`, res.data);
+  }).catch(console.error);
+}
+
+function doJepg() {
+  const buf = fs.readFileSync(imgFile);
+  const request = new compress.CompressRequest();
+  request.setType(compress.Type.JPEG);
+  request.setData(new Uint8Array(buf));
+  request.setQuality(75);
+  doRequest(request).then((res) => {
+    fs.writeFileSync(`${distPath}/banner.jpeg`, res.data);
+  }).catch(console.error);
+}
+
+doBrotli();
+doGzip();
+doWebp();
+doJepg()

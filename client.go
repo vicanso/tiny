@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	pb "./compress"
+	pb "./proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
