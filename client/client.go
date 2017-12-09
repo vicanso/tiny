@@ -4,7 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 
-	pb "./proto"
+	pb "../proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
@@ -15,7 +15,7 @@ const (
 )
 
 func main() {
-	buf, err := ioutil.ReadFile("./assets/lodash.min.js")
+	buf, err := ioutil.ReadFile("../assets/lodash.min.js")
 	if err != nil {
 		log.Fatalf("get file data: %v", err)
 	}
@@ -46,7 +46,7 @@ func main() {
 	log.Printf("brotli success, reduce %d percent", 100 - (len(res.Data)*100)/len(buf))
 
 
-	buf, err = ioutil.ReadFile("./assets/banner.png")
+	buf, err = ioutil.ReadFile("../assets/banner.png")
 	if err != nil {
 		log.Fatalf("get file data: %v", err)
 	}

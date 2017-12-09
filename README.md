@@ -17,3 +17,11 @@
 ```bash
 protoc -I proto/ proto/compress.proto --go_out=plugins=grpc:proto
 ```
+
+## docker
+
+### build
+
+```bash
+docker run -it --rm -v ~/github/tiny:/tiny golang
+```
