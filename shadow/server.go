@@ -21,6 +21,8 @@ func compress(in *pb.CompressRequest) ([]byte, error) {
 		newBuf, err = doWebp(buf, in.Width, in.Height, in.Quality, in.ImageType)
 	case pb.Type_JPEG:
 		newBuf, err = doJPEG(buf, in.Width, in.Height, in.Quality, in.ImageType)
+	case pb.Type_PNG:
+		newBuf, err = doPNG(buf, in.Width, in.Height, in.ImageType)
 	}
 	if err != nil {
 		return nil, err

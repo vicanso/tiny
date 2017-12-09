@@ -28,14 +28,14 @@ message CompressRequest {
   Type type = 1;
   // 数据
   bytes data = 2;
+  // 压缩质量
+  uint32 quality = 7;
   // 图片类型
-  string imageType = 3;
+  string imageType = 8;
   // 图片宽度
-  uint32 width = 4;
+  uint32 width = 9;
   // 图片高度
-  uint32 height = 5;
-  // 图片质量
-  uint32 quality = 6;
+  uint32 height = 10;
 }
 
 // The response message containing the greetings

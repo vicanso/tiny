@@ -76,3 +76,17 @@ func doJPEG(buf []byte, width, height, quality uint32, imageType string) ([]byte
 	}
 	return newBuf.Bytes(), nil	
 }
+
+// 对图片做png转换压缩
+func doPNG(buf []byte, width, height uint32, imageType string) ([]byte, error) {
+	img, err := getImage(buf, width, height, imageType)
+	if err != nil {
+		return nil, err
+	}
+	newBuf := bytes.NewBuffer(nil) //开辟一个新的空buff
+	err = png.Encode(newBuf, img)
+	if err != nil {
+		return nil, err
+	}
+	return newBuf.Bytes(), nil
+}

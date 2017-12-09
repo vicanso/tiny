@@ -64,7 +64,18 @@ function doJepg() {
   }).catch(console.error);
 }
 
+function doPNG() {
+  const buf = fs.readFileSync(imgFile);
+  const request = new compress.CompressRequest();
+  request.setType(compress.Type.PNG);
+  request.setData(new Uint8Array(buf));
+  doRequest(request).then((res) => {
+    fs.writeFileSync(`${distPath}/banner.png`, res.data);
+  }).catch(console.error); 
+}
+
 doBrotli();
 doGzip();
 doWebp();
-doJepg()
+doJepg();
+doPNG();
