@@ -8,6 +8,8 @@ apt-get update \
   && make \
   && make test \
   && make install \
+  && rm -rf /tiny/lib/* \
+  && cp -r /usr/local/lib/libbrotli* /tiny/lib \
   && cd /tiny \
   && go get golang.org/x/net/context \
   && go get google.golang.org/grpc \

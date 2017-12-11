@@ -20,8 +20,16 @@ protoc -I proto/ proto/compress.proto --go_out=plugins=grpc:proto
 
 ## docker
 
+export LD_LIBRARY_PATH=/tiny/lib
+指定动态库目录
+
 ### build
 
 ```bash
-docker run -it --rm -v ~/github/tiny:/tiny golang
+# 生成动态库与执行文件
+docker run -it --rm -v ~/github/tiny:/tiny golang bash
+```
+
+```bash
+docker build -t vicanso/tiny .
 ```

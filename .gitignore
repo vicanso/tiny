@@ -1,2 +1,4 @@
 node_modules
 assets/dist
+lib/*
+tiny
