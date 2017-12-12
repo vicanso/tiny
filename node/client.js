@@ -1,6 +1,7 @@
 const grpc = require('grpc');
 const path = require('path');
 const fs = require('fs');
+const mkdirp = require('mkdirp');
 
 const protoFile = path.join(__dirname, '../proto/compress.proto');
 const jsFile = path.join(__dirname, '../assets/lodash.min.js');
@@ -8,7 +9,9 @@ const imgFile = path.join(__dirname, '../assets/banner.png');
 const distPath = path.join(__dirname, '../assets/dist');
 
 const compress = grpc.load(protoFile).compress;
-const client = new compress.Compress('127.0.0.1:50051', grpc.credentials.createInsecure());
+const client = new compress.Compress('127.0.0.1:3016', grpc.credentials.createInsecure());
+
+mkdirp.sync(distPath);
 
 function doRequest(request) {
   return new Promise((resolve, reject) => {
