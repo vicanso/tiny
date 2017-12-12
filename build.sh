@@ -11,6 +11,7 @@ apt-get update \
   && rm -rf /tiny/lib/* \
   && cp -r /usr/local/lib/libbrotli* /tiny/lib \
   && cd /tiny \
+  && go get github.com/buger/jsonparser \
   && go get golang.org/x/net/context \
   && go get google.golang.org/grpc \
   && go get google.golang.org/grpc/reflection \
