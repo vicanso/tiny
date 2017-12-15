@@ -1,16 +1,19 @@
 package shadow
 
 import (
-	"compress/gzip"
 	"bytes"
+	"compress/gzip"
 
 	cbrotli "github.com/google/brotli/go/cbrotli"
 )
 
 // brotli压缩
-func doBrotli(buf []byte) ([]byte, error) {
+func doBrotli(buf []byte, quality uint32) ([]byte, error) {
+	if quality == 0 {
+		quality = 9
+	}
 	return cbrotli.Encode(buf, cbrotli.WriterOptions{
-		Quality: 9,
+		Quality: int(quality),
 		LGWin:   0,
 	})
 }

@@ -3,11 +3,11 @@ package shadow
 import (
 	"bytes"
 	"image"
-	"image/png"
 	"image/jpeg"
+	"image/png"
 
-	"github.com/nfnt/resize"
 	"github.com/chai2010/webp"
+	"github.com/nfnt/resize"
 )
 
 func getImage(buf []byte, width, height uint32, imageType string) (image.Image, error) {
@@ -22,7 +22,7 @@ func getImage(buf []byte, width, height uint32, imageType string) (image.Image, 
 	case "jepg":
 		img, err = jpeg.Decode(reader)
 	}
-	
+
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func doWebp(buf []byte, width, height, quality uint32, imageType string) ([]byte
 	} else {
 		err = webp.Encode(newBuf, img, &webp.Options{
 			Lossless: false,
-			Quality: float32(quality),
+			Quality:  float32(quality),
 		})
 	}
 	if err != nil {
@@ -74,7 +74,7 @@ func doJPEG(buf []byte, width, height, quality uint32, imageType string) ([]byte
 	if err != nil {
 		return nil, err
 	}
-	return newBuf.Bytes(), nil	
+	return newBuf.Bytes(), nil
 }
 
 // 对图片做png转换压缩
