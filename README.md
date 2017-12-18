@@ -1,4 +1,9 @@
-# compression
+# tiny 
+
+此程序主要提供图片的转换处理以及文本的压缩，有`HTTP`与`GRPC`的调用方式
+
+- 图片支持`webp` `jpeg` `png`
+- 数据压缩支持`brotli` `gzip`两种
 
 ## 使用建议
 
@@ -34,6 +39,12 @@ docker run -it --rm -v ~/github/tiny:/tiny golang bash
 docker build -t vicanso/tiny .
 ```
 
+### run
+
+```bash
+docker run -d --restart=always -p 3015:3015 -p 3016:3016 vicanso/tiny
+```
+
 ## example
 
 - `query.url` 需要做压缩的源数据地址
@@ -45,7 +56,7 @@ docker build -t vicanso/tiny .
 - `query.quality` 图片压缩处理时的质量，对于`webp`，`0`表示无损。对于`brotli`，如果为`0`表示默认值`9`。
 
 ```bash
-curl 'http://aslant.site/@tiny/optim?url=https://raw.githubusercontent.com/lodash/lodash/4.17.4/dist/lodash.min.js&type=brotli' 
+curl 'https://aslant.site/@tiny/optim?url=https://raw.githubusercontent.com/lodash/lodash/4.17.4/dist/lodash.min.js&type=brotli' 
 
-curl 'http://aslant.site/@tiny/optim?url=https://www.joinpay.com/statics/themes/default/images/bigBanner1.png&type=webp&quality=75'
+curl 'https://aslant.site/@tiny/optim?url=https://www.joinpay.com/statics/themes/default/images/bigBanner1.png&type=webp&quality=75'
 ```

@@ -1,6 +1,8 @@
 package shadow
 
 import (
+	"bytes"
+	"compress/gzip"
 	"encoding/base64"
 	"io/ioutil"
 	"log"
@@ -11,6 +13,7 @@ import (
 
 	pb "../proto"
 	"github.com/buger/jsonparser"
+	"github.com/mozillazg/request"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -34,13 +37,28 @@ func getData(req *http.Request) ([]byte, string, error) {
 		c := &http.Client{
 			Timeout: 10 * time.Second,
 		}
-		res, err := c.Get(url)
+		req := request.NewRequest(c)
+		req.Headers = map[string]string{
+			"Accept-Encoding": "gzip",
+		}
+		res, err := req.Get(url)
 		if err != nil {
-			return nil, contentType, err
+			return nil, "", err
 		}
 		contentType = res.Header.Get("Content-Type")
+		contentEncoding := res.Header.Get("Content-Encoding")
 		defer res.Body.Close()
 		data, err := ioutil.ReadAll(res.Body)
+		if contentEncoding == "gzip" {
+			r, err := gzip.NewReader(bytes.NewBuffer(data))
+			if err != nil {
+				return nil, "", err
+			}
+			data, err = ioutil.ReadAll(r)
+			if err != nil {
+				return nil, "", err
+			}
+		}
 		return data, contentType, err
 	}
 	body, err := ioutil.ReadAll(req.Body)
