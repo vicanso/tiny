@@ -8,29 +8,29 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	pb "../proto"
 	"github.com/buger/jsonparser"
 	"github.com/mozillazg/request"
+	"github.com/valyala/fasthttp"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
 // 获取query参数
-func getQuery(query map[string][]string, key string) string {
-	data := query[key]
+func getQuery(query *fasthttp.Args, key string) string {
+	data := query.Peek(key)
 	if data == nil {
 		return ""
 	}
-	return strings.Join(data, "")
+	return string(data[:])
 }
 
 // 读取数据，根据请求的url或者base64数据
-func getData(req *http.Request) ([]byte, string, error) {
-	query := req.URL.Query()
+func getData(ctx *fasthttp.RequestCtx) ([]byte, string, error) {
+	query := ctx.QueryArgs()
 	url := getQuery(query, "url")
 	contentType := ""
 	if len(url) != 0 {
@@ -61,17 +61,22 @@ func getData(req *http.Request) ([]byte, string, error) {
 		}
 		return data, contentType, err
 	}
-	body, err := ioutil.ReadAll(req.Body)
-	defer req.Body.Close()
-	if err != nil {
-		return nil, contentType, err
+	body := ctx.PostBody()
+	data, _ := jsonparser.GetString(body, "data")
+	var buf []byte
+	if len(data) == 0 {
+		base64Data, err := jsonparser.GetString(body, "base64")
+		if err != nil {
+			return nil, contentType, err
+		}
+		buf, err = base64.StdEncoding.DecodeString(base64Data)
+		if err != nil {
+			return nil, contentType, err
+		}
+	} else {
+		buf = []byte(data)
 	}
-	base64Data, err := jsonparser.GetString(body, "base64")
-	if err != nil {
-		return nil, contentType, err
-	}
-	data, err := base64.StdEncoding.DecodeString(base64Data)
-	return data, contentType, err
+	return buf, contentType, nil
 }
 
 func grpcCompress(in *pb.CompressRequest) ([]byte, error) {
@@ -110,15 +115,15 @@ func (s *server) Do(ctx context.Context, in *pb.CompressRequest) (*pb.CompressRe
 	}, nil
 }
 
-func pingServe(w http.ResponseWriter, req *http.Request) {
-	w.Write([]byte("pong"))
+func pingServe(ctx *fasthttp.RequestCtx) {
+	ctx.SetBody([]byte("pong"))
 }
 
 // 图片压缩处理（保持原有尺寸，调整质量）
-func optimServe(w http.ResponseWriter, req *http.Request) {
-	log.Printf("%s %s %s", req.RemoteAddr, req.Method, req.URL)
-	w.Header().Set("Cache-Control", "no-cache")
-	query := req.URL.Query()
+func optimServe(ctx *fasthttp.RequestCtx) {
+	log.Printf("%s %s %s", ctx.RemoteAddr(), ctx.Method(), ctx.URI())
+	ctx.Response.Header.Set("Cache-Control", "no-cache")
+	query := ctx.QueryArgs()
 
 	alg := getQuery(query, "type")
 	imageType := getQuery(query, "imageType")
@@ -130,22 +135,19 @@ func optimServe(w http.ResponseWriter, req *http.Request) {
 	tmpQuality, _ := strconv.Atoi(getQuery(query, "quality"))
 	quality := uint32(tmpQuality)
 
-	data, contentType, err := getData(req)
-	header := w.Header()
+	data, contentType, err := getData(ctx)
 	if err != nil {
-		header.Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"message": "load data faial"}`))
-		return
+		ctx.Response.Header.Set("Content-Type", "application/json")
+		ctx.Error(`{"message": "load data faial"}`, fasthttp.StatusInternalServerError)
 	}
 	var newBuf []byte
 	switch alg {
 	default:
 		newBuf, err = doGzip(data)
-		header.Set("Content-Encoding", "gzip")
+		ctx.Response.Header.Set("Content-Encoding", "gzip")
 	case "brotli":
 		newBuf, err = doBrotli(data, quality)
-		header.Set("Content-Encoding", "br")
+		ctx.Response.Header.Set("Content-Encoding", "br")
 	case "webp":
 		contentType = "image/webp"
 		newBuf, err = doWebp(data, width, height, quality, imageType)
@@ -158,24 +160,29 @@ func optimServe(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if err != nil {
-		header.Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"message": "compress data fail"}`))
+		ctx.Response.Header.Set("Content-Type", "application/json")
+		ctx.Error(`{"message": "compress data fail"}`, fasthttp.StatusInternalServerError)
 		return
 	}
 
-	header.Set("Content-Length", strconv.Itoa(len(newBuf)))
+	ctx.Response.Header.Set("Content-Length", strconv.Itoa(len(newBuf)))
 
 	if len(contentType) != 0 {
-		header.Set("Content-Type", contentType)
+		ctx.Response.Header.Set("Content-Type", contentType)
 	}
-	w.Write(newBuf)
+	ctx.SetBody(newBuf)
 }
 
-// RunHTTP 启动HTTP服务
-func RunHTTP() {
-	http.HandleFunc("/ping", pingServe)
-	http.HandleFunc("/@tiny/optim", optimServe)
+// HTTPHandler 启动HTTP服务
+func HTTPHandler(ctx *fasthttp.RequestCtx) {
+	switch string(ctx.Path()) {
+	case "/ping":
+		pingServe(ctx)
+	case "/@tiny/optim":
+		optimServe(ctx)
+	default:
+		ctx.Error("Unsupported path", fasthttp.StatusNotFound)
+	}
 }
 
 // RunGRPC 启动GRPC服务

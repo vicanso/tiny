@@ -19,5 +19,6 @@ apt-get update \
   && go get github.com/google/brotli/go/cbrotli \
   && go get github.com/nfnt/resize \
   && go get github.com/chai2010/webp \
+  && go get github.com/valyala/fasthttp \
   && go build
   

@@ -3,11 +3,11 @@ package main
 import (
 	"log"
 	"net"
-	"net/http"
 	"os"
 	"strings"
 
 	shadow "./shadow"
+	"github.com/valyala/fasthttp"
 )
 
 const (
@@ -16,11 +16,8 @@ const (
 )
 
 func httpListen() {
-	shadow.RunHTTP()
 	log.Println("http server listen on" + httpPort)
-	if err := http.ListenAndServe(httpPort, nil); err != nil {
-		log.Fatal(err)
-	}
+	fasthttp.ListenAndServe(httpPort, shadow.HTTPHandler)
 }
 
 func grpcListen() {
