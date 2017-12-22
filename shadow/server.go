@@ -116,7 +116,8 @@ func (s *server) Do(ctx context.Context, in *pb.CompressRequest) (*pb.CompressRe
 }
 
 func pingServe(ctx *fasthttp.RequestCtx) {
-	ctx.SetBody([]byte("pong"))
+	ctx.SetBodyString("pong")
+	ctx.SetConnectionClose()
 }
 
 // 图片压缩处理（保持原有尺寸，调整质量）
