@@ -86,9 +86,9 @@ func grpcCompress(in *pb.CompressRequest) ([]byte, error) {
 	buf := in.Data
 	switch alg {
 	default:
-		newBuf, err = doGzip(buf)
+		newBuf, err = doGzip(buf, int(in.Quality))
 	case pb.Type_BROTLI:
-		newBuf, err = doBrotli(buf, in.Quality)
+		newBuf, err = doBrotli(buf, int(in.Quality))
 	case pb.Type_WEBP:
 		newBuf, err = doWebp(buf, in.Width, in.Height, in.Quality, in.ImageType)
 	case pb.Type_JPEG:
@@ -144,10 +144,10 @@ func optimServe(ctx *fasthttp.RequestCtx) {
 	var newBuf []byte
 	switch alg {
 	default:
-		newBuf, err = doGzip(data)
+		newBuf, err = doGzip(data, int(quality))
 		ctx.Response.Header.Set("Content-Encoding", "gzip")
 	case "brotli":
-		newBuf, err = doBrotli(data, quality)
+		newBuf, err = doBrotli(data, int(quality))
 		ctx.Response.Header.Set("Content-Encoding", "br")
 	case "webp":
 		contentType = "image/webp"

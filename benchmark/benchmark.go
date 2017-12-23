@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"compress/gzip"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"time"
@@ -11,20 +12,20 @@ import (
 )
 
 // brotli压缩
-func doBrotli(buf []byte, quality uint32) ([]byte, error) {
+func doBrotli(buf []byte, quality int) ([]byte, error) {
 	if quality == 0 {
 		quality = 9
 	}
 	return cbrotli.Encode(buf, cbrotli.WriterOptions{
-		Quality: int(quality),
+		Quality: quality,
 		LGWin:   0,
 	})
 }
 
 // gzip压缩
-func doGzip(buf []byte, quality uint32) ([]byte, error) {
+func doGzip(buf []byte, quality int) ([]byte, error) {
 	var b bytes.Buffer
-	w, err := gzip.NewWriterLevel(&b, int(quality))
+	w, err := gzip.NewWriterLevel(&b, quality)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +41,7 @@ func log(category, file string, compressBuf, buf []byte, use time.Duration) {
 	fmt.Printf("%v use %v to %d(%d%%) use %v \n", file, category, len(compressBuf), len(compressBuf)*100/len(buf), use)
 }
 
-func test(file string, quality uint32) {
+func test(file string, quality int) {
 	buf, _ := ioutil.ReadFile("./assets/" + file)
 	start := time.Now()
 	brBuf, _ := doBrotli(buf, quality)
@@ -53,7 +54,9 @@ func test(file string, quality uint32) {
 }
 
 func main() {
-	test("angular.min.js", 8)
-	test("lodash.min.js", 8)
-	test("github.css", 8)
+	quality := flag.Int("q", 6, "quality")
+	flag.Parse()
+	test("angular.min.js", *quality)
+	test("lodash.min.js", *quality)
+	test("github.css", *quality)
 }

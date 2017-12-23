@@ -8,21 +8,27 @@ import (
 )
 
 // brotli压缩
-func doBrotli(buf []byte, quality uint32) ([]byte, error) {
+func doBrotli(buf []byte, quality int) ([]byte, error) {
 	if quality == 0 {
 		quality = 9
 	}
 	return cbrotli.Encode(buf, cbrotli.WriterOptions{
-		Quality: int(quality),
+		Quality: quality,
 		LGWin:   0,
 	})
 }
 
 // gzip压缩
-func doGzip(buf []byte) ([]byte, error) {
+func doGzip(buf []byte, quality int) ([]byte, error) {
+	if quality == 0 {
+		quality = gzip.DefaultCompression
+	}
 	var b bytes.Buffer
-	w := gzip.NewWriter(&b)
-	_, err := w.Write(buf)
+	w, err := gzip.NewWriterLevel(&b, quality)
+	if err != nil {
+		return nil, err
+	}
+	_, err = w.Write(buf)
 	if err != nil {
 		return nil, err
 	}
