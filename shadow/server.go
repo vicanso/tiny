@@ -19,6 +19,14 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+const (
+	JPEG = "jpeg"
+	PNG = "png"
+	WEBP = "webp"
+	BROTLI = "brotli"
+	GZIP = "gzip"
+)
+
 // 获取query参数
 func getQuery(query *fasthttp.Args, key string) string {
 	data := query.Peek(key)
@@ -146,16 +154,16 @@ func optimServe(ctx *fasthttp.RequestCtx) {
 	default:
 		newBuf, err = doGzip(data, int(quality))
 		ctx.Response.Header.Set("Content-Encoding", "gzip")
-	case "brotli":
+	case BROTLI:
 		newBuf, err = doBrotli(data, int(quality))
 		ctx.Response.Header.Set("Content-Encoding", "br")
-	case "webp":
+	case WEBP:
 		contentType = "image/webp"
 		newBuf, err = doWebp(data, width, height, quality, imageType)
-	case "jpeg":
+	case JPEG:
 		contentType = "image/jpeg"
 		newBuf, err = doJPEG(data, width, height, quality, imageType)
-	case "png":
+	case PNG:
 		contentType = "image/png"
 		newBuf, err = doPNG(data, width, height, imageType)
 	}

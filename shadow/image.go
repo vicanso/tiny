@@ -17,9 +17,9 @@ func getImage(buf []byte, width, height uint32, imageType string) (image.Image, 
 	switch imageType {
 	default:
 		img, _, err = image.Decode(reader)
-	case "png":
+	case PNG:
 		img, err = png.Decode(reader)
-	case "jepg":
+	case JPEG:
 		img, err = jpeg.Decode(reader)
 	}
 
