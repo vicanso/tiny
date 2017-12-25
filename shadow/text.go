@@ -33,5 +33,6 @@ func doGzip(buf []byte, quality int) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	w.Flush()
 	return b.Bytes(), nil
 }
