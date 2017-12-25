@@ -25,6 +25,7 @@ func doGzip(buf []byte, quality int) ([]byte, error) {
 	}
 	var b bytes.Buffer
 	w, err := gzip.NewWriterLevel(&b, quality)
+	defer w.Close()
 	if err != nil {
 		return nil, err
 	}
@@ -32,6 +33,5 @@ func doGzip(buf []byte, quality int) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	w.Close()
 	return b.Bytes(), nil
 }
