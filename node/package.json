@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "google-protobuf": "^3.5.0",
-    "grpc": "^1.8.0-pre2",
+    "grpc": "^1.8.0",
     "mkdirp": "^0.5.1"
   }
 }
