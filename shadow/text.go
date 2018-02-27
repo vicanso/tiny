@@ -4,22 +4,11 @@ import (
 	"bytes"
 	"compress/gzip"
 
-	cbrotli "github.com/google/brotli/go/cbrotli"
+	"github.com/google/brotli/go/cbrotli"
 )
 
-// brotli压缩
-func doBrotli(buf []byte, quality int) ([]byte, error) {
-	if quality == 0 {
-		quality = 9
-	}
-	return cbrotli.Encode(buf, cbrotli.WriterOptions{
-		Quality: quality,
-		LGWin:   0,
-	})
-}
-
-// gzip压缩
-func doGzip(buf []byte, quality int) ([]byte, error) {
+// DoGzip gzip压缩
+func DoGzip(buf []byte, quality int) ([]byte, error) {
 	if quality == 0 {
 		quality = gzip.DefaultCompression
 	}
@@ -35,4 +24,15 @@ func doGzip(buf []byte, quality int) ([]byte, error) {
 	}
 	w.Close()
 	return b.Bytes(), nil
+}
+
+// DoBrotli brotli压缩
+func DoBrotli(buf []byte, quality int) ([]byte, error) {
+	if quality == 0 {
+		quality = 9
+	}
+	return cbrotli.Encode(buf, cbrotli.WriterOptions{
+		Quality: quality,
+		LGWin:   0,
+	})
 }

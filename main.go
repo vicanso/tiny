@@ -6,8 +6,8 @@ import (
 	"os"
 	"strings"
 
-	shadow "./shadow"
 	"github.com/valyala/fasthttp"
+	"github.com/vicanso/tiny/shadow"
 )
 
 const (
@@ -25,7 +25,7 @@ func grpcListen() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	s := shadow.RunGRPC()
+	s := shadow.GetGRPCServer()
 	log.Println("grp server listen on" + port)
 	if err := s.Serve(listen); err != nil {
 		log.Fatalf("failed to serve: %v", err)

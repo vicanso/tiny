@@ -3,6 +3,7 @@ package shadow
 import (
 	"bytes"
 	"compress/gzip"
+	"context"
 	"encoding/base64"
 	"io/ioutil"
 	"log"
@@ -10,22 +11,65 @@ import (
 	"strconv"
 	"time"
 
-	pb "../proto"
 	"github.com/buger/jsonparser"
 	"github.com/mozillazg/request"
 	"github.com/valyala/fasthttp"
-	"golang.org/x/net/context"
+	pb "github.com/vicanso/tiny/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
 
-const (
-	JPEG = "jpeg"
-	PNG = "png"
-	WEBP = "webp"
-	BROTLI = "brotli"
-	GZIP = "gzip"
-)
+func grpcCompress(in *pb.CompressRequest) ([]byte, error) {
+	var newBuf []byte
+	var err error
+	alg := in.Type
+	buf := in.Data
+	imageType := int(in.ImageType)
+	quality := int(in.Quality)
+	switch alg {
+	default:
+		newBuf, err = DoGzip(buf, int(in.Quality))
+	case pb.Type_BROTLI:
+		newBuf, err = DoBrotli(buf, int(in.Quality))
+	case pb.Type_WEBP:
+		newBuf, err = DoWebp(buf, imageType, quality)
+	case pb.Type_JPEG:
+		newBuf, err = DoJPEG(buf, imageType, quality)
+	case pb.Type_PNG:
+		newBuf, err = DoPNG(buf, imageType, quality)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return newBuf, nil
+}
+
+// Server rpc servere处理
+type Server struct{}
+
+// Do 数据处理
+func (s *Server) Do(ctx context.Context, in *pb.CompressRequest) (*pb.CompressReply, error) {
+	buf, err := grpcCompress(in)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.CompressReply{
+		Data: buf,
+	}, nil
+}
+
+// GetGRPCServer 获取GRPC Server
+func GetGRPCServer() *grpc.Server {
+	s := grpc.NewServer()
+	pb.RegisterCompressServer(s, &Server{})
+	reflection.Register(s)
+	return s
+}
+
+func pingServe(ctx *fasthttp.RequestCtx) {
+	ctx.SetBodyString("pong")
+	ctx.SetConnectionClose()
+}
 
 // 获取query参数
 func getQuery(query *fasthttp.Args, key string) string {
@@ -72,60 +116,16 @@ func getData(ctx *fasthttp.RequestCtx) ([]byte, string, error) {
 	body := ctx.PostBody()
 	data, _ := jsonparser.GetString(body, "data")
 	var buf []byte
-	if len(data) == 0 {
-		base64Data, err := jsonparser.GetString(body, "base64")
+	if len(data) != 0 {
+		body, err := base64.StdEncoding.DecodeString(data)
 		if err != nil {
 			return nil, contentType, err
 		}
-		buf, err = base64.StdEncoding.DecodeString(base64Data)
-		if err != nil {
-			return nil, contentType, err
-		}
+		buf = body
 	} else {
-		buf = []byte(data)
+		buf = body
 	}
 	return buf, contentType, nil
-}
-
-func grpcCompress(in *pb.CompressRequest) ([]byte, error) {
-	var newBuf []byte
-	var err error
-	alg := in.Type
-	buf := in.Data
-	switch alg {
-	default:
-		newBuf, err = doGzip(buf, int(in.Quality))
-	case pb.Type_BROTLI:
-		newBuf, err = doBrotli(buf, int(in.Quality))
-	case pb.Type_WEBP:
-		newBuf, err = doWebp(buf, in.Width, in.Height, in.Quality, in.ImageType)
-	case pb.Type_JPEG:
-		newBuf, err = doJPEG(buf, in.Width, in.Height, in.Quality, in.ImageType)
-	case pb.Type_PNG:
-		newBuf, err = doPNG(buf, in.Width, in.Height, in.ImageType)
-	}
-	if err != nil {
-		return nil, err
-	}
-	return newBuf, nil
-}
-
-// server is used to implement compress.CompressServer.
-type server struct{}
-
-func (s *server) Do(ctx context.Context, in *pb.CompressRequest) (*pb.CompressReply, error) {
-	buf, err := grpcCompress(in)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.CompressReply{
-		Data: buf,
-	}, nil
-}
-
-func pingServe(ctx *fasthttp.RequestCtx) {
-	ctx.SetBodyString("pong")
-	ctx.SetConnectionClose()
 }
 
 // 图片压缩处理（保持原有尺寸，调整质量）
@@ -134,70 +134,66 @@ func optimServe(ctx *fasthttp.RequestCtx) {
 	ctx.Response.Header.Set("Cache-Control", "no-cache")
 	query := ctx.QueryArgs()
 
-	alg := getQuery(query, "type")
-	imageType := getQuery(query, "imageType")
+	alg, _ := strconv.Atoi(getQuery(query, "type"))
+	imageType, _ := strconv.Atoi(getQuery(query, "imageType"))
 
-	tmpWidth, _ := strconv.Atoi(getQuery(query, "width"))
-	width := uint32(tmpWidth)
-	tmpHeight, _ := strconv.Atoi(getQuery(query, "height"))
-	height := uint32(tmpHeight)
-	tmpQuality, _ := strconv.Atoi(getQuery(query, "quality"))
-	quality := uint32(tmpQuality)
-
+	width, _ := strconv.Atoi(getQuery(query, "width"))
+	height, _ := strconv.Atoi(getQuery(query, "height"))
+	quality, _ := strconv.Atoi(getQuery(query, "quality"))
 	data, contentType, err := getData(ctx)
 	if err != nil {
-		ctx.Response.Header.Set("Content-Type", "application/json")
-		ctx.Error(`{"message": "load data faial"}`, fasthttp.StatusInternalServerError)
-	}
-	var newBuf []byte
-	switch alg {
-	default:
-		newBuf, err = doGzip(data, int(quality))
-		ctx.Response.Header.Set("Content-Encoding", "gzip")
-	case BROTLI:
-		newBuf, err = doBrotli(data, int(quality))
-		ctx.Response.Header.Set("Content-Encoding", "br")
-	case WEBP:
-		contentType = "image/webp"
-		newBuf, err = doWebp(data, width, height, quality, imageType)
-	case JPEG:
-		contentType = "image/jpeg"
-		newBuf, err = doJPEG(data, width, height, quality, imageType)
-	case PNG:
-		contentType = "image/png"
-		newBuf, err = doPNG(data, width, height, imageType)
-	}
-
-	if err != nil {
-		ctx.Response.Header.Set("Content-Type", "application/json")
-		ctx.Error(`{"message": "compress data fail"}`, fasthttp.StatusInternalServerError)
+		ctx.Error("load data fail, "+err.Error(), fasthttp.StatusInternalServerError)
 		return
 	}
-
-	ctx.Response.Header.Set("Content-Length", strconv.Itoa(len(newBuf)))
-
 	if len(contentType) != 0 {
-		ctx.Response.Header.Set("Content-Type", contentType)
+		switch contentType {
+		case "image/jpeg":
+			imageType = JPEG
+		case "image/png":
+			imageType = PNG
+		case "image/webp":
+			imageType = WEBP
+		}
 	}
-	ctx.SetBody(newBuf)
+	in := &pb.CompressRequest{
+		Type:      pb.Type(alg),
+		ImageType: pb.Type(imageType),
+		Width:     uint32(width),
+		Height:    uint32(height),
+		Quality:   uint32(quality),
+		Data:      data,
+	}
+	buf, err := grpcCompress(in)
+	if err != nil {
+		ctx.Error("optim fail, "+err.Error(), fasthttp.StatusInternalServerError)
+		return
+	}
+	respHeader := &ctx.Response.Header
+	switch alg {
+	case GZIP:
+		respHeader.Set("Content-Encoding", "gzip")
+	case BROTLI:
+		respHeader.Set("Content-Encoding", "br")
+	case WEBP:
+		respHeader.SetContentType("image/webp")
+	case JPEG:
+		respHeader.SetContentType("image/jpeg")
+	case PNG:
+		respHeader.SetContentType("image/png")
+	}
+	ctx.SetBody(buf)
 }
 
-// HTTPHandler 启动HTTP服务
+// HTTPHandler 获取HTTP处理函数
 func HTTPHandler(ctx *fasthttp.RequestCtx) {
 	switch string(ctx.Path()) {
 	case "/ping":
 		pingServe(ctx)
 	case "/@tiny/optim":
 		optimServe(ctx)
+	case "/optim":
+		optimServe(ctx)
 	default:
 		ctx.Error("Unsupported path", fasthttp.StatusNotFound)
 	}
-}
-
-// RunGRPC 启动GRPC服务
-func RunGRPC() *grpc.Server {
-	s := grpc.NewServer()
-	pb.RegisterCompressServer(s, &server{})
-	reflection.Register(s)
-	return s
 }

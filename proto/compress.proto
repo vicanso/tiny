@@ -11,9 +11,9 @@ enum Type {
   // GZIP BROTLI用于文本的压缩
   GZIP = 0;
   BROTLI = 1;
-  WEBP = 2;
-  JPEG = 3;
-  PNG = 4;
+  JPEG = 2;
+  PNG = 3;
+  WEBP = 4;
 }
 
 // The compress service definition.
@@ -31,7 +31,7 @@ message CompressRequest {
   // 压缩质量
   uint32 quality = 7;
   // 图片类型
-  string imageType = 8;
+  Type imageType = 8;
   // 图片宽度
   uint32 width = 9;
   // 图片高度
