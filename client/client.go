@@ -10,8 +10,7 @@ import (
 )
 
 const (
-	address     = "localhost:50051"
-	defaultName = "world"
+	address = "localhost:3016"
 )
 
 func main() {
@@ -45,14 +44,14 @@ func main() {
 	}
 	log.Printf("brotli success, reduce %d percent", 100-(len(res.Data)*100)/len(buf))
 
-	buf, err = ioutil.ReadFile("../assets/banner.png")
+	buf, err = ioutil.ReadFile("../assets/fluidicon.png")
 	if err != nil {
 		log.Fatalf("get file data: %v", err)
 	}
 	res, err = c.Do(context.Background(), &pb.CompressRequest{
 		Type:      pb.Type_WEBP,
 		Data:      buf,
-		ImageType: "png",
+		ImageType: pb.Type_PNG,
 		Quality:   75,
 	})
 
@@ -64,7 +63,7 @@ func main() {
 	res, err = c.Do(context.Background(), &pb.CompressRequest{
 		Type:      pb.Type_JPEG,
 		Data:      buf,
-		ImageType: "png",
+		ImageType: pb.Type_PNG,
 		Quality:   75,
 	})
 

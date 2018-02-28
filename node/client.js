@@ -5,7 +5,7 @@ const mkdirp = require('mkdirp');
 
 const protoFile = path.join(__dirname, '../proto/compress.proto');
 const jsFile = path.join(__dirname, '../assets/lodash.min.js');
-const imgFile = path.join(__dirname, '../assets/banner.png');
+const imgFile = path.join(__dirname, '../assets/fluidicon.png');
 const distPath = path.join(__dirname, '../assets/dist');
 
 const compress = grpc.load(protoFile).compress;
@@ -52,7 +52,7 @@ function doWebp() {
   request.setData(new Uint8Array(buf));
   request.setQuality(75);
   doRequest(request).then((res) => {
-    fs.writeFileSync(`${distPath}/banner.webp`, res.data);
+    fs.writeFileSync(`${distPath}/fluidicon.webp`, res.data);
   }).catch(console.error);
 }
 
@@ -63,7 +63,7 @@ function doJepg() {
   request.setData(new Uint8Array(buf));
   request.setQuality(75);
   doRequest(request).then((res) => {
-    fs.writeFileSync(`${distPath}/banner.jpeg`, res.data);
+    fs.writeFileSync(`${distPath}/fluidicon.jpeg`, res.data);
   }).catch(console.error);
 }
 
@@ -73,7 +73,7 @@ function doPNG() {
   request.setType(compress.Type.PNG);
   request.setData(new Uint8Array(buf));
   doRequest(request).then((res) => {
-    fs.writeFileSync(`${distPath}/banner.png`, res.data);
+    fs.writeFileSync(`${distPath}/fluidicon.png`, res.data);
   }).catch(console.error); 
 }
 

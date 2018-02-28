@@ -1,0 +1,11 @@
+language: go
+
+go:
+  - 1.x
+
+install:
+  - go get -u github.com/golang/dep/cmd/dep
+
+script:
+  - dep ensure
+  - go test ./shadow
