@@ -2,6 +2,24 @@
 
 
 [[projects]]
+  name = "github.com/bitly/go-simplejson"
+  packages = ["."]
+  revision = "aabad6e819789e569bd6aabf444c935aa9ba1e44"
+  version = "v0.5.0"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/buger/jsonparser"
+  packages = ["."]
+  revision = "4be68c93a24430ddf9c33d1380b7042fd3a13424"
+
+[[projects]]
+  name = "github.com/chai2010/guetzli-go"
+  packages = ["."]
+  revision = "fa0ad6f96693a1639e9f739aa794648ac88e6425"
+  version = "v1.0.1"
+
+[[projects]]
   branch = "master"
   name = "github.com/chai2010/webp"
   packages = ["."]
@@ -38,6 +56,12 @@
   version = "v1.1"
 
 [[projects]]
+  name = "github.com/mozillazg/request"
+  packages = ["."]
+  revision = "052232e32456da4751d789b61e89aba4a07a7e25"
+  version = "v0.8.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/nfnt/resize"
   packages = ["."]
@@ -58,7 +82,7 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["context","http2","http2/hpack","idna","internal/timeseries","lex/httplex","trace"]
+  packages = ["context","http2","http2/hpack","idna","internal/timeseries","lex/httplex","proxy","publicsuffix","trace"]
   revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
 
 [[projects]]
@@ -82,6 +106,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e999d35f31b310620170794e5d8387be29e964deb3fdd2088be3163ee5a631d4"
+  inputs-digest = "14dfaeefed7cf45ddb9baf10f7b29af64d2e7107f9c6a1367705242ed8b56fb2"
   solver-name = "gps-cdcl"
   solver-version = 1

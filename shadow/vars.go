@@ -11,4 +11,6 @@ const (
 	PNG
 	// WEBP webp type
 	WEBP
+	// GUETZLI guetzli jpeg type
+	GUETZLI
 )

@@ -6,6 +6,7 @@ import (
 	"image/jpeg"
 	"image/png"
 
+	"github.com/chai2010/guetzli-go"
 	"github.com/chai2010/webp"
 	"github.com/nfnt/resize"
 )
@@ -22,6 +23,8 @@ func decode(buf []byte, imageType int) (image.Image, error) {
 	case PNG:
 		img, err = png.Decode(reader)
 	case JPEG:
+		img, err = jpeg.Decode(reader)
+	case GUETZLI:
 		img, err = jpeg.Decode(reader)
 	}
 	return img, err
@@ -43,6 +46,8 @@ func convertImage(buf []byte, imageType, quality, outputType int) ([]byte, error
 		err = doJpeg(writer, img, quality)
 	case PNG:
 		err = doPng(writer, img, quality)
+	case GUETZLI:
+		err = doGuetzli(writer, img, quality)
 	}
 	// err = fn(writer, img, quality)
 	if err != nil {
@@ -73,6 +78,12 @@ func doJpeg(writer *bytes.Buffer, img image.Image, quality int) error {
 	})
 }
 
+func doGuetzli(writer *bytes.Buffer, img image.Image, quality int) error {
+	return guetzli.Encode(writer, img, &guetzli.Options{
+		Quality: quality,
+	})
+}
+
 // DoWebp 将图片以webp格式输出
 func DoWebp(buf []byte, imageType, quality int) ([]byte, error) {
 	return convertImage(buf, imageType, quality, WEBP)
@@ -86,6 +97,11 @@ func DoJPEG(buf []byte, imageType, quality int) ([]byte, error) {
 // DoPNG 将图片以png格式输出
 func DoPNG(buf []byte, imageType, quality int) ([]byte, error) {
 	return convertImage(buf, imageType, quality, PNG)
+}
+
+// DoGUEZLI 将图片以guezli处理输出
+func DoGUEZLI(buf []byte, imageType, quality int) ([]byte, error) {
+	return convertImage(buf, imageType, quality, GUETZLI)
 }
 
 // DoResize 调整图片尺寸

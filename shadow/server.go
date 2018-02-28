@@ -37,6 +37,8 @@ func grpcCompress(in *pb.CompressRequest) ([]byte, error) {
 		newBuf, err = DoJPEG(buf, imageType, quality)
 	case pb.Type_PNG:
 		newBuf, err = DoPNG(buf, imageType, quality)
+	case pb.Type_GUETZLI:
+		newBuf, err = DoGUEZLI(buf, imageType, quality)
 	}
 	if err != nil {
 		return nil, err

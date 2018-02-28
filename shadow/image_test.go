@@ -19,6 +19,7 @@ const (
 	jpeg480Size    = 57797
 	png480Size     = 789144
 	webpResizeSize = 207480
+	jpegGuezliSize = 172076
 )
 
 func compressImage(t *testing.T, fn func([]byte, int, int) ([]byte, error), imageType, quality int, file, alg, dst string) []byte {
@@ -49,6 +50,11 @@ func TestWebp(t *testing.T) {
 	buf = compressImage(t, DoPNG, JPEG, 90, "../assets/mac.jpg", "png", "../assets/compress/mac.png")
 	if len(buf) != pngSize {
 		t.Fatalf("convert jpeg to png fail")
+	}
+
+	buf = compressImage(t, DoGUEZLI, GUETZLI, 90, "../assets/mac.jpg", "guetzli", "../assets/compress/mac-q90.guetzli.jpg")
+	if len(buf) != jpegGuezliSize {
+		t.Fatalf("convert jpeg(guetzli) fail")
 	}
 }
 
