@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net"
@@ -13,23 +14,21 @@ import (
 	"google.golang.org/grpc"
 )
 
-const (
-	httpPort = ":3015"
-	port     = ":3016"
-)
+var httpPort = flag.String("httpPort", "3015", "the http listen port")
+var grpcPort = flag.String("grpcPort", "3016", "the grpc listen port")
 
 func httpListen() {
-	log.Println("http server listen on" + httpPort)
-	fasthttp.ListenAndServe(httpPort, shadow.HTTPHandler)
+	log.Println("http server listen on:" + *httpPort)
+	fasthttp.ListenAndServe(":"+*httpPort, shadow.HTTPHandler)
 }
 
 func grpcListen() {
-	listen, err := net.Listen("tcp", port)
+	listen, err := net.Listen("tcp", ":"+*grpcPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 	s := shadow.GetGRPCServer()
-	log.Println("grp server listen on" + port)
+	log.Println("grp server listen on:" + *grpcPort)
 	if err := s.Serve(listen); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
@@ -45,7 +44,7 @@ func contains(list []string, s string) bool {
 }
 
 func checkHTTP() {
-	url := "http://127.0.0.1" + httpPort + "/ping"
+	url := "http://127.0.0.1:" + *httpPort + "/ping"
 	resp, err := http.Get(url)
 	if err != nil {
 		fmt.Print(err)
@@ -61,7 +60,7 @@ func checkHTTP() {
 }
 
 func checkGRPC() {
-	conn, err := grpc.Dial("127.0.0.1:"+port, grpc.WithInsecure())
+	conn, err := grpc.Dial("127.0.0.1:"+*grpcPort, grpc.WithInsecure())
 	if err != nil {
 		fmt.Print(err)
 		os.Exit(1)
@@ -82,9 +81,12 @@ func check(services string) {
 	os.Exit(0)
 }
 
+func init() {
+	flag.Parse()
+}
+
 func main() {
 	services := strings.ToUpper(os.Getenv("SERVICES"))
-
 	if contains(os.Args[1:], "check") {
 		check(services)
 		return
