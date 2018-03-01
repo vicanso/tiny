@@ -25,15 +25,7 @@ protoc -I proto/ proto/compress.proto --go_out=plugins=grpc:proto
 
 ## docker
 
-export LD_LIBRARY_PATH=/tiny/lib
-指定动态库目录
-
 ### build
-
-```bash
-# 生成动态库与执行文件
-docker run -it --rm -v ~/github/tiny:/tiny golang bash
-```
 
 ```bash
 docker build -t vicanso/tiny .
@@ -49,14 +41,14 @@ docker run -d --restart=always -p 3015:3015 -p 3016:3016 vicanso/tiny
 
 - `query.url` 需要做压缩的源数据地址
 - `body.base64` 如果`query.url`为空，则从POST数据中的base64字段中取数据
-- `query.type` 压缩类型，对于文本数据，可以为：`brotli`或者`gzip`。图片数据则为：`webp`、`jpeg`或者`png`
+- `query.type` 类型，可选范围为0-5
 - `query.imageType` 对于图片数据，建议指定图片类型，否则有可能图片解码失败
 - `query.width` 图片转换后的宽度，如果不设置，自适应
 - `query.height` 图片转换后的高度，如果不设置，自适应
-- `query.quality` 图片压缩处理时的质量，对于`webp`，`0`表示无损。对于`brotli`，如果为`0`表示默认值`9`。
+- `query.quality` 图片压缩处理时的质量，对于`webp`，`0`表示无损。对于`brotli`，如果为`0`表示默认值`9`。对于`gzip`，如果为`0`表示使用默认压缩级别。
 
 ```bash
-curl 'https://aslant.site/@tiny/optim?url=https://raw.githubusercontent.com/lodash/lodash/4.17.4/dist/lodash.min.js&type=brotli' 
+curl 'https://aslant.site/@tiny/optim?url=https://raw.githubusercontent.com/lodash/lodash/4.17.4/dist/lodash.min.js&type=1' 
 
 curl 'https://aslant.site/@tiny/optim?url=https://www.joinpay.com/statics/themes/default/images/bigBanner1.png&type=webp&quality=75'
 ```
