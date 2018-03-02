@@ -21,7 +21,7 @@ RUN apt-get update \
   && cd pngquant \
   && make && make install \
   && cd /go/src/github.com/vicanso/tiny \
-  GOOS=linux go build -o tiny main.go
+  && GOOS=linux go build -o tiny main.go
 
 FROM ubuntu
 
