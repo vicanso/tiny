@@ -39,6 +39,14 @@ func doCmdConvert(app string, buf []byte, quality int) ([]byte, error) {
 			originalFile,
 			targetFile,
 		}
+	case "pngquant":
+		args = []string{
+			"--quality",
+			strconv.Itoa(quality),
+			originalFile,
+			"--output",
+			targetFile,
+		}
 	}
 	cmd := exec.Command(app, args...)
 
@@ -112,7 +120,16 @@ func doWebp(writer *bytes.Buffer, img image.Image, quality int) error {
 }
 
 func doPng(writer *bytes.Buffer, img image.Image, quality int) error {
-	return png.Encode(writer, img)
+	// return png.Encode(writer, img)
+
+	buf := bytes.NewBuffer(nil)
+	png.Encode(buf, img)
+	data, err := doCmdConvert("pngquant", buf.Bytes(), quality)
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write(data)
+	return err
 }
 
 func doJpeg(writer *bytes.Buffer, img image.Image, quality int) error {

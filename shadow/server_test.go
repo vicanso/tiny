@@ -70,7 +70,7 @@ func TestDoJpeg(t *testing.T) {
 }
 
 func TestDoPng(t *testing.T) {
-	out, err := doGrpc("../assets/mac.jpg", pb.Type_JPEG, pb.Type_PNG, 0)
+	out, err := doGrpc("../assets/mac.jpg", pb.Type_JPEG, pb.Type_PNG, 80)
 	if err != nil {
 		t.Fatalf("grpc do fail, %v", err)
 	}
@@ -112,7 +112,7 @@ func TestHttpDoImageConvert(t *testing.T) {
 		t.Fatalf("convert jpg to jpg(90) by http fail")
 	}
 
-	ctx = getCtx("../assets/mac.jpg", "type=3&imageType=2&quality=0")
+	ctx = getCtx("../assets/mac.jpg", "type=3&imageType=2&quality=80")
 	HTTPHandler(ctx)
 	if len(ctx.Response.Body()) != pngSize {
 		t.Fatalf("convert jpg to png by http fail")

@@ -14,10 +14,10 @@ const (
 	gzipSize       = 59656
 	webpSize       = 124770
 	jpegSize       = 222640
-	pngSize        = 2390713
+	pngSize        = 415628
 	webp480Size    = 31392
 	jpeg480Size    = 57797
-	png480Size     = 789144
+	png480Size     = 751897
 	webpResizeSize = 207480
 	jpegGuezliSize = 160977
 )
@@ -47,7 +47,7 @@ func TestWebp(t *testing.T) {
 	if len(buf) != jpegSize {
 		t.Fatalf("compress jpeg fail")
 	}
-	buf = compressImage(t, DoPNG, JPEG, 90, "../assets/mac.jpg", "png", "../assets/compress/mac.png")
+	buf = compressImage(t, DoPNG, JPEG, 80, "../assets/mac.jpg", "png", "../assets/compress/mac.png")
 	if len(buf) != pngSize {
 		t.Fatalf("convert jpeg to png fail")
 	}
@@ -85,7 +85,7 @@ func TestResize(t *testing.T) {
 		t.Fatalf("resize jpg fail")
 	}
 
-	buf = resizeImage(t, "../assets/compress/mac.png", "../assets/compress/mac-resize.png", PNG, 0, width, 0)
+	buf = resizeImage(t, "../assets/compress/mac.png", "../assets/compress/mac-resize.png", PNG, 80, width, 0)
 	if len(buf) != png480Size {
 		t.Fatalf("resize png fail")
 	}
