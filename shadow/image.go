@@ -5,8 +5,11 @@ import (
 	"image"
 	"image/jpeg"
 	"image/png"
+	"io/ioutil"
+	"os"
+	"os/exec"
+	"strconv"
 
-	"github.com/chai2010/guetzli-go"
 	"github.com/chai2010/webp"
 	"github.com/nfnt/resize"
 )
@@ -79,9 +82,38 @@ func doJpeg(writer *bytes.Buffer, img image.Image, quality int) error {
 }
 
 func doGuetzli(writer *bytes.Buffer, img image.Image, quality int) error {
-	return guetzli.Encode(writer, img, &guetzli.Options{
+	buf := bytes.NewBuffer(nil)
+	jpeg.Encode(buf, img, &jpeg.Options{
 		Quality: quality,
 	})
+	tmpfile, err := ioutil.TempFile("", "guetzli")
+	if err != nil {
+		return err
+	}
+	imgFile := tmpfile.Name()
+	// 删除文件
+	defer os.Remove(imgFile)
+	if _, err := tmpfile.Write(buf.Bytes()); err != nil {
+		return err
+	}
+	if err := tmpfile.Close(); err != nil {
+		return err
+	}
+
+	cmd := exec.Command("guetzli", "--quality", strconv.Itoa(quality), imgFile, imgFile)
+
+	err = cmd.Run()
+	if err != nil {
+		return err
+	}
+
+	data, err := ioutil.ReadFile(imgFile)
+	if err != nil {
+		return err
+	}
+	_, err = writer.Write(data)
+	return err
+
 }
 
 // DoWebp 将图片以webp格式输出

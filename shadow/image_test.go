@@ -19,7 +19,7 @@ const (
 	jpeg480Size    = 57797
 	png480Size     = 789144
 	webpResizeSize = 207480
-	jpegGuezliSize = 172076
+	jpegGuezliSize = 160977
 )
 
 func compressImage(t *testing.T, fn func([]byte, int, int) ([]byte, error), imageType, quality int, file, alg, dst string) []byte {

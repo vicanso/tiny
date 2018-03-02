@@ -14,16 +14,10 @@
   revision = "4be68c93a24430ddf9c33d1380b7042fd3a13424"
 
 [[projects]]
-  name = "github.com/chai2010/guetzli-go"
-  packages = ["."]
-  revision = "fa0ad6f96693a1639e9f739aa794648ac88e6425"
-  version = "v1.0.1"
-
-[[projects]]
-  branch = "master"
   name = "github.com/chai2010/webp"
   packages = ["."]
-  revision = "3bf12259b1cd565687ea00c9e5a6b648868133c5"
+  revision = "2f2af1eca6e61973231b4da4db56418f1b6dcb33"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -83,7 +77,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context","http2","http2/hpack","idna","internal/timeseries","lex/httplex","proxy","publicsuffix","trace"]
-  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+  revision = "22ae77b79946ea320088417e4d50825671d82d57"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -95,7 +89,7 @@
   branch = "master"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
-  revision = "2d9486acae19cf9bd0c093d7dc236a323726a9e4"
+  revision = "2c5e7ac708aaa719366570dd82bda44541ca2a63"
 
 [[projects]]
   name = "google.golang.org/grpc"
@@ -106,6 +100,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "14dfaeefed7cf45ddb9baf10f7b29af64d2e7107f9c6a1367705242ed8b56fb2"
+  inputs-digest = "d839055b7fa8fa89fc60e954b645c169f4763d860e993b55039e2a0bf8bb2d35"
   solver-name = "gps-cdcl"
   solver-version = 1

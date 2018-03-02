@@ -41,7 +41,3 @@
   name = "github.com/valyala/fasthttp"
   branch = "master"
   # version = "20160617.0.0"
-
-[[constraint]]
-  name = "github.com/chai2010/guetzli-go"
-  version = "1.0.1"
