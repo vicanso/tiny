@@ -40,7 +40,7 @@ ENV LD_LIBRARY_PATH /usr/local/lib
 RUN apt-get update \
   && apt-get install -y ca-certificates libpng-dev
 
-HEALTHCHECK --interval=30s --timeout=3s \
+HEALTHCHECK --interval=10s --timeout=3s \
   CMD /tiny check || exit 1
 
 CMD ["/tiny"]
