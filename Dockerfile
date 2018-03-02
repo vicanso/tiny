@@ -16,9 +16,12 @@ RUN apt-get update \
   && git clone https://github.com/google/guetzli.git \
   && cd guetzli \
   && make \
+  && cd /tmp \
+  && git clone https://github.com/kornelski/pngquant.git \
+  && cd pngquant \
+  && make && make install \
   && cd /go/src/github.com/vicanso/tiny \
   GOOS=linux go build -o tiny main.go
-
 
 FROM ubuntu
 
@@ -30,6 +33,7 @@ COPY --from=builder /usr/local/lib/libbrotlicommon.* /usr/local/lib/
 COPY --from=builder /usr/local/lib/libbrotlienc.* /usr/local/lib/
 COPY --from=builder /usr/local/lib/libbrotlidec.* /usr/local/lib/
 COPY --from=builder /tmp/guetzli/bin/Release/guetzli /bin/ 
+COPY --from=builder /usr/local/bin/pngquant /bin/ 
 
 ENV LD_LIBRARY_PATH /usr/local/lib
 
