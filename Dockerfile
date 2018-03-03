@@ -32,13 +32,14 @@ COPY --from=builder /go/src/github.com/vicanso/tiny/tiny /
 COPY --from=builder /usr/local/lib/libbrotlicommon.* /usr/local/lib/
 COPY --from=builder /usr/local/lib/libbrotlienc.* /usr/local/lib/
 COPY --from=builder /usr/local/lib/libbrotlidec.* /usr/local/lib/
+COPY --from=builder /usr/lib/x86_64-linux-gnu/libpng* /usr/local/lib/
 COPY --from=builder /tmp/guetzli/bin/Release/guetzli /bin/ 
 COPY --from=builder /usr/local/bin/pngquant /bin/ 
 
 ENV LD_LIBRARY_PATH /usr/local/lib
 
 RUN apt-get update \
-  && apt-get install -y ca-certificates libpng-dev
+  && apt-get install -y ca-certificates
 
 HEALTHCHECK --interval=10s --timeout=3s \
   CMD /tiny check || exit 1
