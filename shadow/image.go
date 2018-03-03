@@ -14,6 +14,46 @@ import (
 	"github.com/nfnt/resize"
 )
 
+func doCmdConvert(app string, buf []byte, quality int) ([]byte, error) {
+	tmpfile, err := ioutil.TempFile("", app)
+	if err != nil {
+		return nil, err
+	}
+	originalFile := tmpfile.Name()
+	targetFile := originalFile + "-" + app
+	// 删除文件
+	defer os.Remove(originalFile)
+	defer os.Remove(targetFile)
+	if _, err := tmpfile.Write(buf); err != nil {
+		return nil, err
+	}
+	if err := tmpfile.Close(); err != nil {
+		return nil, err
+	}
+	var args []string
+	switch app {
+	case "guetzli":
+		args = []string{
+			"--quality",
+			strconv.Itoa(quality),
+			originalFile,
+			targetFile,
+		}
+	}
+	cmd := exec.Command(app, args...)
+
+	err = cmd.Run()
+	if err != nil {
+		return nil, err
+	}
+
+	data, err := ioutil.ReadFile(targetFile)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
 func decode(buf []byte, imageType int) (image.Image, error) {
 	var img image.Image
 	var err error
@@ -86,34 +126,12 @@ func doGuetzli(writer *bytes.Buffer, img image.Image, quality int) error {
 	jpeg.Encode(buf, img, &jpeg.Options{
 		Quality: quality,
 	})
-	tmpfile, err := ioutil.TempFile("", "guetzli")
-	if err != nil {
-		return err
-	}
-	imgFile := tmpfile.Name()
-	// 删除文件
-	defer os.Remove(imgFile)
-	if _, err := tmpfile.Write(buf.Bytes()); err != nil {
-		return err
-	}
-	if err := tmpfile.Close(); err != nil {
-		return err
-	}
-
-	cmd := exec.Command("guetzli", "--quality", strconv.Itoa(quality), imgFile, imgFile)
-
-	err = cmd.Run()
-	if err != nil {
-		return err
-	}
-
-	data, err := ioutil.ReadFile(imgFile)
+	data, err := doCmdConvert("guetzli", buf.Bytes(), quality)
 	if err != nil {
 		return err
 	}
 	_, err = writer.Write(data)
 	return err
-
 }
 
 // DoWebp 将图片以webp格式输出
