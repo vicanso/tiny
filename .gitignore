@@ -8,7 +8,7 @@ vendor
 
 .DS_Store
 node_modules
-/dist
+/site/dist
 
 # local env files
 .env.local

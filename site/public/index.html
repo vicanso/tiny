@@ -6,6 +6,24 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="shortcut icon" href="<%= webpackConfig.output.publicPath %>favicon.ico">
     <title>site</title>
+    <style>
+      * {
+        margin:0;
+        padding: 0;
+      }
+      body {
+        padding-bottom: 60px;
+      }
+      #footer {
+        text-align: center;
+        position: fixed;
+        height: 40px;
+        line-height: 40px;
+        left: 0;
+        bottom: 0;
+        right: 0;
+      }
+    </style>
   </head>
   <body>
     <noscript>
@@ -13,5 +31,8 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <footer id="footer">
+      © 2018 Tree.Xie (Something or nothing)
+    </footer>
   </body>
 </html>
