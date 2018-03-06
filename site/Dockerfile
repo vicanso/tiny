@@ -1,6 +1,6 @@
 FROM node:alpine
 
-ENV NODE_ENV=production
+EXPOSE 5018
 
 ADD ./ /app
 
