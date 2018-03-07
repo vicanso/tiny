@@ -75,6 +75,10 @@ function doRequest(request) {
   });
 }
 
+router.get('/ping', (ctx) => {
+  ctx.body = 'pong';
+});
+
 // 文件上传
 router.post('/api/upload', upload.single('file'), (ctx) => {
   const {
