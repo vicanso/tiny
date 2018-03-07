@@ -11,11 +11,12 @@
       :on-error="handleError"
       :on-success="handleSuccess"
       :on-remove="handleRemove"
+      :on-exceed="handleExceed"
       :limit="1"
     >
       <i class="el-icon-upload"></i>
       <div class="el-upload__text">Drop file here or <em>click to upload</em></div>
-      <div class="el-upload__tip" slot="tip">files with a size less than 1mb</div>
+      <div class="el-upload__tip" slot="tip">files with a size less than 1mb (only support one file)</div>
     </el-upload>
     <div class="tinyMode">
       <el-radio
@@ -28,7 +29,10 @@
       </el-radio>
     </div>
     <div class="tinyQuality">
-      <el-input placeholder="Please input quality" v-model="quality">
+      <el-input
+        placeholder="Please input quality"
+        v-model="quality"
+      >
         <template slot="prepend">Quality:</template>
       </el-input>
       <div class="el-upload__tip" slot="tip">Webp lossless type should set quality to 0</div>
@@ -39,7 +43,7 @@
     >
       orignal size: {{result.originalSize.toLocaleString()}}
       new size: {{result.size.toLocaleString()}}
-      ({{result.percent}}%)
+      <el-progress :percentage="result.percent"></el-progress>
     </div>
     <el-button
       type="primary"
@@ -101,11 +105,18 @@ export default {
           this.quality = null;
           break;
       }
+      this.reset();
     },
+    quality() {
+      this.reset();
+    }
   },
   methods: {
     handleSuccess(res) {
       this.file = res.file;
+    },
+    reset() {
+      this.result = null;
     },
     async doTiny() {
       if (this.status === 'doing') {
@@ -117,7 +128,7 @@ export default {
         const res = await request.post('/api/tiny', {
           file: this.file,
           mode: this.mode,
-          quality: this.quality,
+          quality: parseInt(this.quality, 10),
         });
         const {
           data,
@@ -147,6 +158,12 @@ export default {
       } = this.result;
       window.location.href = `/api/download/${file}`;
     },
+    handleExceed() {
+      this.$notify({
+        title: 'Warning',
+        message: 'You should remove the current file first',
+      });
+    },
     handleError(err) {
       this.$notify({
         title: 'Error',
@@ -154,6 +171,7 @@ export default {
       });
     },
     handleRemove() {
+      this.reset();
       this.file = '';
     },
   },
@@ -200,5 +218,6 @@ export default {
 .tinyResult {
   text-align: center;
   margin: 20px auto;
+  width: 500px;
 }
 </style>
