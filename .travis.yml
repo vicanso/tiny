@@ -9,3 +9,10 @@ install:
 script:
   - dep ensure
   - go test ./shadow
+
+after_success:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build -t tiny .
+  - docker images
+  - docker tag tiny $DOCKER_USERNAME/tiny
+  - docker push $DOCKER_USERNAME/tiny
