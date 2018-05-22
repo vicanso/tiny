@@ -8,6 +8,11 @@ install:
 
 script:
   - dep ensure
+  - cd vendor/github.com/google/brotli
+  - ./configure-cmake
+  - make && sudo make install
+  - cd ../../../..
+  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
   - go test ./shadow
 
 after_success:
