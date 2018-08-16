@@ -1,4 +1,4 @@
-FROM node:alpine
+FROM node:10-alpine
 
 EXPOSE 5018
 
