@@ -11,3 +11,6 @@ script:
   - docker build -t $DOCKER_USERNAME/tiny .
   - docker images
   - docker push $DOCKER_USERNAME/tiny
+  - cd site
+  - docker build -t $DOCKER_USERNAME/tiny .
+  - docker push $DOCKER_USERNAME/tiny
