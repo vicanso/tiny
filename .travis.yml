@@ -9,8 +9,8 @@ install:
 script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t $DOCKER_USERNAME/tiny .
-  - docker images
   - docker push $DOCKER_USERNAME/tiny
   - cd site
-  - docker build -t $DOCKER_USERNAME/tiny .
-  - docker push $DOCKER_USERNAME/tiny
+  - docker build -t $DOCKER_USERNAME/tiny-site .
+  - docker push $DOCKER_USERNAME/tiny-site
+  - docker images
