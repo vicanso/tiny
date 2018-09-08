@@ -44,4 +44,4 @@ RUN apt-get update \
 HEALTHCHECK --interval=10s --timeout=3s \
   CMD /tiny check || exit 1
 
-CMD ["/tiny"]
+CMD ["tiny"]

@@ -25,10 +25,10 @@
   version = "v1.2.0"
 
 [[projects]]
-  digest = "1:36b55254b3375edfdb1b8249784135c2602699df8cda522cca7a0db11f8cc1c1"
+  digest = "1:2617da259db19933f7cdde4bc8e48a89eb176be1b3f4891cf399b47636fa1ab8"
   name = "github.com/google/brotli"
   packages = ["go/cbrotli"]
-  pruneopts = "NUT"
+  pruneopts = "T"
   revision = "b601fe817bd3217cb144bbb380a43cae8e847388"
   version = "v1.0.5"
 

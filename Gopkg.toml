@@ -32,17 +32,16 @@
 
   [[prune.project]]
     name = "github.com/chai2010/webp"
-    version = "1.0.0"
     unused-packages = false 
     non-go = false 
   [[prune.project]]
     name = "google.golang.org/grpc"
-    version = "1.14.0"
     unused-packages = false
 
-[[constraint]]
-  name = "github.com/google/brotli"
-  version = "1.0.5"
+  [[prune.project]]
+    name = "github.com/google/brotli"
+    unused-packages = false 
+    non-go = false 
 
 [[constraint]]
   branch = "master"
