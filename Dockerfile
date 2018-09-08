@@ -21,14 +21,14 @@ RUN apt-get update \
   && cd pngquant \
   && make && make install \
   && cd /go/src/github.com/vicanso/tiny \
-  && GOOS=linux go build -o tiny main.go
+  && GOOS=linux go build -o tiny-linux main.go
 
 FROM ubuntu
 
 EXPOSE 3015
 EXPOSE 3016
 
-COPY --from=builder /go/src/github.com/vicanso/tiny/tiny /usr/local/bin/
+COPY --from=builder /go/src/github.com/vicanso/tiny/tiny-linux /usr/local/bin/tiny
 COPY --from=builder /usr/local/lib/libbrotlicommon.* /usr/local/lib/
 COPY --from=builder /usr/local/lib/libbrotlienc.* /usr/local/lib/
 COPY --from=builder /usr/local/lib/libbrotlidec.* /usr/local/lib/
