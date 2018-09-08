@@ -2,15 +2,17 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"os"
 	"strings"
 
-	"github.com/valyala/fasthttp"
-	"github.com/vicanso/tiny/shadow"
+	"google.golang.org/grpc/reflection"
+
+	pb "github.com/vicanso/tiny/proto"
+
+	"github.com/vicanso/tiny/tiny"
 	"google.golang.org/grpc"
 )
 
@@ -18,16 +20,23 @@ var httpPort = flag.String("httpPort", "3015", "the http listen port")
 var grpcPort = flag.String("grpcPort", "3016", "the grpc listen port")
 
 func httpListen() {
+	httpServer := tiny.HTTPServer{}
+	http.HandleFunc("/ping", httpServer.Ping)
+	http.HandleFunc("/optim", httpServer.Optim)
 	log.Println("http server listen on:" + *httpPort)
-	fasthttp.ListenAndServe(":"+*httpPort, shadow.HTTPHandler)
+	http.ListenAndServe(":"+*httpPort, nil)
 }
 
 func grpcListen() {
+
 	listen, err := net.Listen("tcp", ":"+*grpcPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-	s := shadow.GetGRPCServer()
+	s := grpc.NewServer()
+	pb.RegisterCompressServer(s, &tiny.GRPCServer{})
+	reflection.Register(s)
+
 	log.Println("grp server listen on:" + *grpcPort)
 	if err := s.Serve(listen); err != nil {
 		log.Fatalf("failed to serve: %v", err)
@@ -47,13 +56,13 @@ func checkHTTP() {
 	url := "http://127.0.0.1:" + *httpPort + "/ping"
 	resp, err := http.Get(url)
 	if err != nil {
-		fmt.Print(err)
+		log.Fatalf("http check fail: %v", err)
 		os.Exit(1)
 		return
 	}
 	statusCode := resp.StatusCode
 	if statusCode < 200 || statusCode >= 400 {
-		fmt.Print(err)
+		log.Fatalf("http check fail, status:%d", statusCode)
 		os.Exit(1)
 		return
 	}
@@ -62,7 +71,7 @@ func checkHTTP() {
 func checkGRPC() {
 	conn, err := grpc.Dial("127.0.0.1:"+*grpcPort, grpc.WithInsecure())
 	if err != nil {
-		fmt.Print(err)
+		log.Fatalf("grpc check fail: %v", err)
 		os.Exit(1)
 		return
 	}

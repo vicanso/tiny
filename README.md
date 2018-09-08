@@ -23,6 +23,16 @@
 protoc -I proto/ proto/compress.proto --go_out=plugins=grpc:proto
 ```
 
+## quality
+
+- gzip: `-1` - `9`
+- brotli: `0` - `11`
+- guetzli: `84` - 
+- jpeg: `0` - ?
+- webp: `0` - ?
+- png: `0` - ?
+
+
 ## docker
 
 ### build

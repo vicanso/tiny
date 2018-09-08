@@ -1,7 +1,6 @@
-
 # Gopkg.toml example
 #
-# Refer to https://github.com/golang/dep/blob/master/docs/Gopkg.toml.md
+# Refer to https://golang.github.io/dep/docs/Gopkg.toml.html
 # for detailed Gopkg.toml documentation.
 #
 # required = ["github.com/user/thing/cmd/thing"]
@@ -17,27 +16,43 @@
 #   source = "github.com/myfork/project2"
 #
 # [[override]]
-#  name = "github.com/x/y"
-#  version = "2.4.0"
+#   name = "github.com/x/y"
+#   version = "2.4.0"
+#
+# [prune]
+#   non-go = false
+#   go-tests = true
+#   unused-packages = true
 
 
-[[constraint]]
-  name = "github.com/golang/protobuf"
-  version = "1.0.0"
+[prune]
+  non-go = true 
+  go-tests = true
+  unused-packages = true
+
+  [[prune.project]]
+    name = "github.com/chai2010/webp"
+    version = "1.0.0"
+    unused-packages = false 
+    non-go = false 
+  [[prune.project]]
+    name = "google.golang.org/grpc"
+    version = "1.14.0"
+    unused-packages = false
 
 [[constraint]]
   name = "github.com/google/brotli"
-  version = "1.0.2"
+  version = "1.0.5"
 
 [[constraint]]
   branch = "master"
-  name = "golang.org/x/net"
+  name = "github.com/nfnt/resize"
 
 [[constraint]]
-  name = "google.golang.org/grpc"
-  version = "1.10.0"
+  name = "github.com/golang/protobuf"
+  version = "1.2.0"
+
 
 [[constraint]]
-  name = "github.com/valyala/fasthttp"
-  branch = "master"
-  # version = "20160617.0.0"
+  name = "github.com/h2non/gock"
+  version = "1.0.9"

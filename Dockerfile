@@ -28,7 +28,7 @@ FROM ubuntu
 EXPOSE 3015
 EXPOSE 3016
 
-COPY --from=builder /go/src/github.com/vicanso/tiny/tiny /
+COPY --from=builder /go/src/github.com/vicanso/tiny/tiny /usr/local/bin/
 COPY --from=builder /usr/local/lib/libbrotlicommon.* /usr/local/lib/
 COPY --from=builder /usr/local/lib/libbrotlienc.* /usr/local/lib/
 COPY --from=builder /usr/local/lib/libbrotlidec.* /usr/local/lib/
