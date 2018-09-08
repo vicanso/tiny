@@ -43,15 +43,14 @@
     unused-packages = false 
     non-go = false 
 
-[[constraint]]
+[[override]]
   branch = "master"
   name = "github.com/nfnt/resize"
 
-[[constraint]]
+[[override]]
   name = "github.com/golang/protobuf"
   version = "1.2.0"
 
-
-[[constraint]]
+[[override]]
   name = "github.com/h2non/gock"
   version = "1.0.9"
