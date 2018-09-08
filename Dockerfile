@@ -1,6 +1,6 @@
 FROM golang as builder
 
-ADD ./ /go/src/github.com/vicanso/tiny
+COPY ./* /go/src/github.com/vicanso/tiny/
 
 RUN apt-get update \
   && apt-get install cmake libpng-dev -y \
