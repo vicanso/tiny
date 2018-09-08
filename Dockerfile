@@ -1,6 +1,6 @@
 FROM golang as builder
 
-COPY ./* /go/src/github.com/vicanso/tiny/
+COPY ./ /go/src/github.com/vicanso/tiny/
 
 RUN apt-get update \
   && apt-get install cmake libpng-dev -y \
@@ -42,6 +42,6 @@ RUN apt-get update \
   && apt-get install -y ca-certificates
 
 HEALTHCHECK --interval=10s --timeout=3s \
-  CMD /tiny check || exit 1
+  CMD tiny check || exit 1
 
 CMD ["tiny"]
