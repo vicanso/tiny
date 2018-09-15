@@ -3,8 +3,11 @@ language: go
 go:
   - 1.x
 
+install:
+  - go get -u github.com/golang/dep/cmd/dep
 
 script:
+  - dep ensure
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
   - docker build -t $DOCKER_USERNAME/tiny .
   - docker push $DOCKER_USERNAME/tiny
