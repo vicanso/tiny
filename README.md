@@ -56,5 +56,5 @@ docker run -d --restart=always -p 3015:3015 -p 3016:3016 vicanso/tiny
 
 
 ```bash
-curl 'http://127.0.0.1:3015/optim?output=png&url=http://oidmt881u.bkt.clouddn.com/mac.jpg&quality=30'
+curl 'http://127.0.0.1:3015/optim?output=webp&url=http://oidmt881u.bkt.clouddn.com/mac.jpg&quality=30'
 ```
