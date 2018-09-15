@@ -1,6 +1,6 @@
 # tiny 
 
-此程序主要提供图片的转换处理以及文本的压缩，有`HTTP`与`GRPC`的调用方式
+此程序主要提供图片的转换处理以及文本的压缩，有`HTTP`与`GRPC`的调用方式，建议配合[tiny-site](https://github.com/vicanso/tiny-site)使用。
 
 - 图片支持`webp` `jpeg` `png`
 - 数据压缩支持`brotli` `gzip`两种
@@ -17,7 +17,7 @@
 
 ## poroto gen
 
-### gen go 
+### gen go
 
 ```bash
 protoc -I proto/ proto/compress.proto --go_out=plugins=grpc:proto
@@ -31,7 +31,6 @@ protoc -I proto/ proto/compress.proto --go_out=plugins=grpc:proto
 - jpeg: `0` - ?
 - webp: `0` - ?
 - png: `0` - ?
-
 
 ## docker
 
@@ -50,15 +49,12 @@ docker run -d --restart=always -p 3015:3015 -p 3016:3016 vicanso/tiny
 ## example
 
 - `query.url` 需要做压缩的源数据地址
-- `body.base64` 如果`query.url`为空，则从POST数据中的base64字段中取数据
-- `query.type` 类型，可选范围为0-5
-- `query.imageType` 对于图片数据，建议指定图片类型，否则有可能图片解码失败
+- `query.output` 输出类型，可以选择png, webp, jpeg
 - `query.width` 图片转换后的宽度，如果不设置，自适应
 - `query.height` 图片转换后的高度，如果不设置，自适应
 - `query.quality` 图片压缩处理时的质量，对于`webp`，`0`表示无损。对于`brotli`，如果为`0`表示默认值`9`。对于`gzip`，如果为`0`表示使用默认压缩级别。
 
-```bash
-curl 'https://aslant.site/@tiny/optim?url=https://raw.githubusercontent.com/lodash/lodash/4.17.4/dist/lodash.min.js&type=1' 
 
-curl 'https://aslant.site/@tiny/optim?url=https://www.joinpay.com/statics/themes/default/images/bigBanner1.png&type=webp&quality=75'
+```bash
+curl 'http://127.0.0.1:3015/optim?output=png&url=http://oidmt881u.bkt.clouddn.com/mac.jpg&quality=30'
 ```
