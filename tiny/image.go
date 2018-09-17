@@ -202,3 +202,71 @@ func DoResize(buf []byte, imageType, quality, width, height, outputType int) ([]
 	}
 	return writer.Bytes(), nil
 }
+
+// DoClip clip image
+func DoClip(buf []byte, clipType, imageType, quality, width, height, outputType int) ([]byte, error) {
+
+	if width == 0 && height == 0 {
+		return nil, errors.New("width and height can not be 0 in clip mode")
+	}
+
+	img, err := decode(buf, imageType)
+	if err != nil {
+		return nil, err
+	}
+	dx := img.Bounds().Dx()
+	dy := img.Bounds().Dy()
+	if width == 0 {
+		width = dx
+	}
+	if height == 0 {
+		height = dy
+	}
+	if width > dx {
+		width = dx
+	}
+	if height > dy {
+		height = dy
+	}
+	var x0, y0 int
+	// image.Rect
+	switch clipType {
+	case ClipLeftTop:
+		x0 = 0
+		y0 = 0
+	case ClipTopCenter:
+		x0 = (dx - width) / 2
+		y0 = 0
+	default:
+		x0 = (dx - width) / 2
+		y0 = (dy - height) / 2
+	}
+	x1 := x0 + width
+	y1 := y0 + height
+	r := image.Rect(x0, y0, x1, y1)
+	if rgbImg, ok := img.(*image.YCbCr); ok {
+		img = rgbImg.SubImage(r)
+	} else if rgbImg, ok := img.(*image.RGBA); ok {
+		img = rgbImg.SubImage(r)
+	} else if rgbImg, ok := img.(*image.NRGBA); ok {
+		img = rgbImg.SubImage(r)
+	} else {
+		return nil, errors.New("decode image fail")
+	}
+
+	writer := bytes.NewBuffer(nil)
+	switch outputType {
+	default:
+		err = convertToJpeg(writer, img, quality)
+	case PNG:
+		err = convertToPng(writer, img, quality)
+	case WEBP:
+		err = convertToWebp(writer, img, quality)
+	case GUETZLI:
+		err = convertToGuetzli(writer, img, quality)
+	}
+	if err != nil {
+		return nil, err
+	}
+	return writer.Bytes(), nil
+}

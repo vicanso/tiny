@@ -273,6 +273,23 @@ func TestOptim(t *testing.T) {
 		}
 	})
 
+	t.Run("clip", func(t *testing.T) {
+		defer gock.Off()
+		mockJpeg()
+		url := "http://127.0.0.1/optim?output=jpeg&quality=50&clip=1&width=64&url=" + jpegURL
+		r := httptest.NewRequest(http.MethodGet, url, nil)
+		w := httptest.NewRecorder()
+		s := HTTPServer{}
+		s.Optim(w, r)
+		if w.Code != http.StatusOK {
+			t.Fatalf("clip image to jpeg fail")
+		}
+		if w.HeaderMap["Content-Type"][0] != "image/jpeg" ||
+			w.HeaderMap["Content-Length"][0] != "1149" {
+			t.Fatalf("optim and resize image to jpeg fail")
+		}
+	})
+
 	t.Run("gzip", func(t *testing.T) {
 		defer gock.Off()
 		mockJs()
@@ -378,6 +395,21 @@ func TestGPRCOptim(t *testing.T) {
 		buf, err := gs.Optim(in)
 		if err != nil || len(buf) != 1736 {
 			t.Fatalf("grpc optim jpeg fail, %v", err)
+		}
+	})
+
+	t.Run("clip", func(t *testing.T) {
+		in := &pb.CompressRequest{
+			Type:      pb.Type_JPEG,
+			Data:      imageBuf,
+			ClipType:  ClipCenter,
+			Quality:   90,
+			ImageType: JPEG,
+			Width:     64,
+		}
+		buf, err := gs.Optim(in)
+		if err != nil || len(buf) != 1670 {
+			t.Fatalf("grpc clip jpeg fail, %v", err)
 		}
 	})
 

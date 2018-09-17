@@ -46,6 +46,17 @@ docker build -t vicanso/tiny .
 docker run -d --restart=always -p 3015:3015 -p 3016:3016 vicanso/tiny
 ```
 
+只启用GRPC
+
+```bash
+docker run -d \
+  --restart=always \
+  -e SERVICES=GRPC \
+  -p 3016:3016 \
+  --name tiny \
+  vicanso/tiny
+```
+
 ## example
 
 - `query.url` 需要做压缩的源数据地址

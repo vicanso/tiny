@@ -6,6 +6,12 @@ import (
 	"github.com/google/brotli/go/cbrotli"
 )
 
+func TestGunzip(t *testing.T) {
+	_, err := DoGunzip(nil)
+	if err == nil {
+		t.Fatalf("gunzip nil should return error")
+	}
+}
 func TestGzip(t *testing.T) {
 	data := "daojrej123ojojaoj"
 	compressBuf, err := DoGzip([]byte(data), 0)

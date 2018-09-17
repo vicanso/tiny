@@ -16,6 +16,17 @@ const (
 )
 
 const (
+	// ClipNone none clip
+	ClipNone = iota
+	// ClipCenter clip center
+	ClipCenter
+	// ClipLeftTop clip left top
+	ClipLeftTop
+	// ClipTopCenter clip top center
+	ClipTopCenter
+)
+
+const (
 	// AppPngquant png quant application
 	AppPngquant = "pngquant"
 	// AppGuetzli guetzli application

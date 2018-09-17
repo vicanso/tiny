@@ -42,6 +42,7 @@ type (
 	OptimParms struct {
 		Output  string `json:"output,omitempty"`
 		URL     string `json:"url,omitempty"`
+		Clip    string `json:"clip,omitempty"`
 		Width   int    `json:"width,omitempty"`
 		Height  int    `json:"height,omitempty"`
 		Quality int    `json:"quality,omitempty"`
@@ -191,7 +192,14 @@ func (s *HTTPServer) Optim(w http.ResponseWriter, r *http.Request) {
 	quality := params.Quality
 	// optim image
 	if imageType > 0 {
-		if params.Height != 0 || params.Width != 0 {
+		if params.Clip != "" {
+			clipType := ClipCenter
+			// 暂时仅支持两种方式
+			if params.Clip == "leftTop" {
+				clipType = ClipLeftTop
+			}
+			buf, err = DoClip(body.Data, clipType, imageType, quality, params.Width, params.Height, output)
+		} else if params.Height != 0 || params.Width != 0 {
 			buf, err = DoResize(body.Data, imageType, quality, params.Width, params.Height, output)
 		} else {
 			switch output {
@@ -237,6 +245,7 @@ func (gs *GRPCServer) Optim(in *pb.CompressRequest) ([]byte, error) {
 	quality := int(in.Quality)
 	width := int(in.Width)
 	height := int(in.Height)
+	clipType := int(in.ClipType)
 	switch alg {
 	default:
 		newBuf, err = DoGzip(buf, quality)
@@ -249,7 +258,11 @@ func (gs *GRPCServer) Optim(in *pb.CompressRequest) ([]byte, error) {
 	case pb.Type_PNG:
 		fallthrough
 	case pb.Type_GUETZLI:
-		newBuf, err = DoResize(buf, imageType, quality, width, height, int(alg))
+		if clipType != ClipNone {
+			newBuf, err = DoClip(buf, clipType, imageType, quality, width, height, int(alg))
+		} else {
+			newBuf, err = DoResize(buf, imageType, quality, width, height, int(alg))
+		}
 	}
 
 	if err != nil {

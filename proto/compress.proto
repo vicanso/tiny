@@ -17,6 +17,13 @@ enum Type {
   GUETZLI = 5;
 }
 
+enum ClipType {
+  NONE = 0;
+  CENTER = 1;
+  LT = 2;
+  TC = 3;
+}
+
 // The compress service definition.
 service Compress {
   // do compress 
@@ -29,6 +36,8 @@ message CompressRequest {
   Type type = 1;
   // 数据
   bytes data = 2;
+  // 剪辑类型
+  ClipType clipType = 3; 
   // 压缩质量
   uint32 quality = 7;
   // 图片类型

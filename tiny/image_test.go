@@ -250,6 +250,12 @@ func TestDoResize(t *testing.T) {
 	imageType := JPEG
 	width := 10
 	height := 0
+	t.Run("resize decode fail", func(t *testing.T) {
+		_, err := DoResize(nil, 0, 0, 0, 0, 0)
+		if err == nil {
+			t.Fatalf("resize nil should return error")
+		}
+	})
 	t.Run("resize to jpeg", func(t *testing.T) {
 		imageBuf, err := DoResize(buf, imageType, quality, width, height, JPEG)
 		if err != nil {
@@ -261,7 +267,12 @@ func TestDoResize(t *testing.T) {
 	})
 
 	t.Run("resize to png", func(t *testing.T) {
-		imageBuf, err := DoResize(buf, imageType, quality, width, height, PNG)
+		pngBuf, err := ioutil.ReadFile(pngFile)
+		if err != nil {
+			t.Fatalf("read file fail, %v", err)
+		}
+
+		imageBuf, err := DoResize(pngBuf, PNG, quality, width, height, PNG)
 		if err != nil {
 			t.Fatalf("resize to png fail, %v", err)
 		}
@@ -289,4 +300,71 @@ func TestDoResize(t *testing.T) {
 			t.Fatalf("resize to guetzli fail, data is nil")
 		}
 	})
+}
+
+func TestClip(t *testing.T) {
+	buf, err := ioutil.ReadFile(jpgFile)
+	if err != nil {
+		t.Fatalf("read file fail, %v", err)
+	}
+	quality := 90
+	imageType := JPEG
+	width := 10
+	height := 10
+	t.Run("width and height both 0", func(t *testing.T) {
+		_, err := DoClip(buf, ClipCenter, imageType, quality, 0, 0, WEBP)
+		if err == nil {
+			t.Fatalf("should return error while width and height both 0")
+		}
+	})
+
+	t.Run("clip nil data", func(t *testing.T) {
+		_, err := DoClip(nil, ClipCenter, imageType, quality, width, height, WEBP)
+		if err == nil {
+			t.Fatalf("clip nil data should return error")
+		}
+	})
+
+	t.Run("clip to jpeg", func(t *testing.T) {
+		_, err := DoClip(buf, ClipCenter, imageType, quality, 500, 500, JPEG)
+		if err != nil {
+			t.Fatalf("clip to jpeg fail, %v", err)
+		}
+	})
+
+	t.Run("clip to png", func(t *testing.T) {
+		_, err := DoClip(buf, ClipLeftTop, imageType, quality, width, height, PNG)
+		if err != nil {
+			t.Fatalf("clip to png fail, %v", err)
+		}
+	})
+
+	t.Run("clip to webp", func(t *testing.T) {
+		_, err := DoClip(buf, ClipCenter, imageType, quality, 0, height, WEBP)
+		if err != nil {
+			t.Fatalf("clip to webp fail, %v", err)
+		}
+	})
+
+	t.Run("clip to guetzli", func(t *testing.T) {
+		_, err := DoClip(buf, ClipCenter, imageType, quality, width, 0, GUETZLI)
+		if err != nil {
+			t.Fatalf("clip to guetzli fail, %v", err)
+		}
+	})
+
+	t.Run("clip left top", func(t *testing.T) {
+		_, err := DoClip(buf, ClipLeftTop, imageType, quality, width, height, PNG)
+		if err != nil {
+			t.Fatalf("clip left top to png fail, %v", err)
+		}
+	})
+
+	t.Run("clip top center", func(t *testing.T) {
+		_, err := DoClip(buf, ClipTopCenter, imageType, quality, width, height, PNG)
+		if err != nil {
+			t.Fatalf("clip top center to png fail, %v", err)
+		}
+	})
+
 }
