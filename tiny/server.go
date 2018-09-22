@@ -10,6 +10,8 @@ import (
 	"strconv"
 	"strings"
 
+	"log"
+
 	pb "github.com/vicanso/tiny/proto"
 )
 
@@ -134,6 +136,17 @@ func (s *HTTPServer) Ping(w http.ResponseWriter, r *http.Request) {
 
 // Optim optim the image
 func (s *HTTPServer) Optim(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		r := recover()
+		if r == nil {
+			return
+		}
+		err, ok := r.(error)
+		if !ok {
+			err = fmt.Errorf("%v", r)
+		}
+		log.Println("optim fail, " + err.Error())
+	}()
 	var err error
 	params, err := getOptimParams(r)
 	if err != nil {
@@ -273,6 +286,17 @@ func (gs *GRPCServer) Optim(in *pb.CompressRequest) ([]byte, error) {
 
 // Do grpc server do
 func (gs *GRPCServer) Do(ctx context.Context, in *pb.CompressRequest) (*pb.CompressReply, error) {
+	defer func() {
+		r := recover()
+		if r == nil {
+			return
+		}
+		err, ok := r.(error)
+		if !ok {
+			err = fmt.Errorf("%v", r)
+		}
+		log.Println("optim fail, " + err.Error())
+	}()
 	buf, err := gs.Optim(in)
 	if err != nil {
 		return nil, err
