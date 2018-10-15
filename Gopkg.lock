@@ -10,6 +10,14 @@
   version = "v1.0.0"
 
 [[projects]]
+  digest = "1:077358142ef758001f3e13759ce42fb0a89a37971bd5b8ae3f52d46987391a6d"
+  name = "github.com/disintegration/imaging"
+  packages = ["."]
+  pruneopts = "NUT"
+  revision = "0bd5694c78c9c3d9a3cd06a706a8f3c59296a9ac"
+  version = "v1.5.0"
+
+[[projects]]
   digest = "1:5ae5b54d7cd695bafa92bf426b7c3d046f907260ec0fcb4fe5c368d937597c00"
   name = "github.com/golang/protobuf"
   packages = [
@@ -25,32 +33,36 @@
   version = "v1.2.0"
 
 [[projects]]
-  digest = "1:2617da259db19933f7cdde4bc8e48a89eb176be1b3f4891cf399b47636fa1ab8"
+  digest = "1:093989285f770fdb92d6b901b8d83510d1a02ac8d7473510532449a024d06595"
   name = "github.com/google/brotli"
   packages = ["go/cbrotli"]
   pruneopts = "T"
-  revision = "b601fe817bd3217cb144bbb380a43cae8e847388"
-  version = "v1.0.5"
+  revision = "6eba239a5bb553fd557b7d78f7da8f0059618b9e"
+  version = "v1.0.6"
 
 [[projects]]
-  digest = "1:1abfd6c88e686011ded98de2b6f5d704c19e1e4bb388b8e4c789567ea338140a"
+  digest = "1:99faebd20d946acf913a251b3b64906095fd3b746ef0022ac286a6e2a96058c2"
   name = "github.com/h2non/gock"
   packages = ["."]
   pruneopts = "NUT"
-  revision = "4692cba4394f79372bfe85996501ad43db9d82e0"
-  version = "v1.0.9"
+  revision = "db9916111f9d238f7fe98f34dfde20f11142475b"
+  version = "v1.0.10"
 
 [[projects]]
   branch = "master"
-  digest = "1:65052ea0d82c4c8da6bb6dc21396f2f3d17857f86536ea1c88e271bd98ffeeaa"
-  name = "github.com/nfnt/resize"
-  packages = ["."]
+  digest = "1:d3d337e91c35f337d548873978c858ecb723168a6303a41a3ba625c79094f899"
+  name = "golang.org/x/image"
+  packages = [
+    "bmp",
+    "tiff",
+    "tiff/lzw",
+  ]
   pruneopts = "NUT"
-  revision = "83c6a9932646f83e3267f353373d47347b6036b2"
+  revision = "991ec62608f3c0da01d400756917825d1e2fd528"
 
 [[projects]]
   branch = "master"
-  digest = "1:a2707daa031e6db5fcaae8a9b30eaa503a0d7d8aa72cd50b27fa394ef6c3f7fe"
+  digest = "1:d39e451e542c7c064d7e29050eb50993a7484d4a3b538387c0f2ac32b5b9cdd8"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -62,15 +74,15 @@
     "trace",
   ]
   pruneopts = "NUT"
-  revision = "161cd47e91fd58ac17490ef4d742dc98bb4cf60e"
+  revision = "49bb7cea24b1df9410e1712aa6433dae904ff66a"
 
 [[projects]]
   branch = "master"
-  digest = "1:49716578d575fb5f5cec43b324d9cbc3112c5485e853bc93e02b0867bda2be26"
+  digest = "1:e1e75018db0765a0ac54aa7f9473417a7db770c75c9527b4bfff03d2e55f0a0a"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "NUT"
-  revision = "8cf3aee429924738c56c34bb819c4ea8273fc434"
+  revision = "fa43e7bc11baaae89f3f902b2b4d832b68234844"
 
 [[projects]]
   digest = "1:e7071ed636b5422cc51c0e3a6cebc229d6c9fffc528814b519a980641422d619"
@@ -97,14 +109,14 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:077c1c599507b3b3e9156d17d36e1e61928ee9b53a5b420f10f28ebd4a0b275c"
+  digest = "1:56b0bca90b7e5d1facf5fbdacba23e4e0ce069d25381b8e2f70ef1e7ebfb9c1a"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
   pruneopts = "NUT"
-  revision = "11092d34479b07829b72e10713b159248caf5dad"
+  revision = "af9cb2a35e7f169ec875002c1829c9b315cddc04"
 
 [[projects]]
-  digest = "1:bd98c07155425154fa0fa9eea73bb70082506633a3d9186ecffa7fb1939f6052"
+  digest = "1:37c371f48e209f4d25a90c52c4fa3c48b968c0cb47ab74e05cbff568f390ec68"
   name = "google.golang.org/grpc"
   packages = [
     ".",
@@ -137,18 +149,18 @@
     "tap",
   ]
   pruneopts = "NT"
-  revision = "32fb0ac620c32ba40a4626ddf94d90d12cce3455"
-  version = "v1.14.0"
+  revision = "8dea3dc473e90c8179e519d91302d0597c0ca1d1"
+  version = "v1.15.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
     "github.com/chai2010/webp",
+    "github.com/disintegration/imaging",
     "github.com/golang/protobuf/proto",
     "github.com/google/brotli/go/cbrotli",
     "github.com/h2non/gock",
-    "github.com/nfnt/resize",
     "golang.org/x/net/context",
     "google.golang.org/grpc",
     "google.golang.org/grpc/reflection",

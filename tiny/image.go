@@ -12,7 +12,7 @@ import (
 	"strconv"
 
 	"github.com/chai2010/webp"
-	"github.com/nfnt/resize"
+	"github.com/disintegration/imaging"
 )
 
 // doCmdConvert call application to convert image
@@ -183,7 +183,7 @@ func DoResize(buf []byte, imageType, quality, width, height, outputType int) ([]
 	}
 	if width != 0 || height != 0 {
 		// 对图片做尺寸调整（原比例不变化 ）
-		img = resize.Resize(uint(width), uint(height), img, resize.NearestNeighbor)
+		img = imaging.Resize(img, width, height, imaging.Lanczos)
 	}
 
 	writer := bytes.NewBuffer(nil)
