@@ -244,15 +244,7 @@ func DoClip(buf []byte, clipType, imageType, quality, width, height, outputType 
 	x1 := x0 + width
 	y1 := y0 + height
 	r := image.Rect(x0, y0, x1, y1)
-	if rgbImg, ok := img.(*image.YCbCr); ok {
-		img = rgbImg.SubImage(r)
-	} else if rgbImg, ok := img.(*image.RGBA); ok {
-		img = rgbImg.SubImage(r)
-	} else if rgbImg, ok := img.(*image.NRGBA); ok {
-		img = rgbImg.SubImage(r)
-	} else {
-		return nil, errors.New("decode image fail")
-	}
+	img = imaging.Crop(img, r)
 
 	writer := bytes.NewBuffer(nil)
 	switch outputType {

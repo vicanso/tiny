@@ -285,7 +285,7 @@ func TestOptim(t *testing.T) {
 			t.Fatalf("clip image to jpeg fail")
 		}
 		if w.HeaderMap["Content-Type"][0] != "image/jpeg" ||
-			w.HeaderMap["Content-Length"][0] != "1149" {
+			w.HeaderMap["Content-Length"][0] != "1147" {
 			t.Fatalf("optim and resize image to jpeg fail")
 		}
 	})
@@ -408,7 +408,7 @@ func TestGPRCOptim(t *testing.T) {
 			Width:     64,
 		}
 		buf, err := gs.Optim(in)
-		if err != nil || len(buf) != 1670 {
+		if err != nil || len(buf) != 1675 {
 			t.Fatalf("grpc clip jpeg fail, %v", err)
 		}
 	})
