@@ -25,14 +25,15 @@ import (
 )
 
 const (
+	defaultGzipQuality   = 6
 	defauttBrotliQuality = 6
 	maxBrotliQuality     = 9
 
-	defaultJEPGQuality = 70
+	defaultJEPGQuality = 80
 	minJPEGQuality     = 0
 	maxJPEGQuality     = 100
 
-	defaultPNGQuality = 80
+	defaultPNGQuality = 90
 	minPNGQuality     = 0
 	maxPNGQuality     = 100
 
@@ -59,15 +60,68 @@ const (
 	EncodeTypeWEBP
 )
 
+const (
+	// Gzip gzip
+	Gzip = "gzip"
+	// Br br
+	Br = "br"
+	// JPEG jpeg
+	JPEG = "jpeg"
+	// PNG png
+	PNG = "png"
+	// WEBP webp
+	WEBP = "webp"
+)
+
 type (
 	// Image image information
 	Image struct {
-		Data  []byte     `json:"data,omitempty"`
-		Type  EncodeType `json:"type,omitempty"`
-		Width int        `json:"width,omitempty"`
-		Heiht int        `json:"heiht,omitempty"`
+		Data   []byte     `json:"data,omitempty"`
+		Type   EncodeType `json:"type,omitempty"`
+		Width  int        `json:"width,omitempty"`
+		Height int        `json:"height,omitempty"`
+	}
+	// Text text information
+	Text struct {
+		Data []byte     `json:"data,omitempty"`
+		Type EncodeType `json:"type,omitempty"`
 	}
 )
+
+func (t EncodeType) String() string {
+	switch t {
+	default:
+		return "unknown"
+	case EncodeTypeGzip:
+		return Gzip
+	case EncodeTypeBr:
+		return Br
+	case EncodeTypeJPEG:
+		return JPEG
+	case EncodeTypePNG:
+		return PNG
+	case EncodeTypeWEBP:
+		return WEBP
+	}
+}
+
+// ConvertToEncodeType convert to encode type
+func ConvertToEncodeType(t string) EncodeType {
+	switch t {
+	default:
+		return EncodeTypeUnknown
+	case Gzip:
+		return EncodeTypeGzip
+	case Br:
+		return EncodeTypeBr
+	case JPEG:
+		return EncodeTypeJPEG
+	case PNG:
+		return EncodeTypePNG
+	case WEBP:
+		return EncodeTypeWEBP
+	}
+}
 
 func imageDecode(buf []byte, sourceType EncodeType) (img image.Image, err error) {
 	reader := bytes.NewReader(buf)
@@ -89,8 +143,8 @@ func ImageResize(img image.Image, width, height int) image.Image {
 	return imaging.Resize(img, width, height, imaging.Lanczos)
 }
 
-// ImageOptiom image optim
-func ImageOptiom(buf []byte, sourceType, outputType EncodeType, quality, width, height int) (imgInfo *Image, err error) {
+// ImageOptim image optim
+func ImageOptim(buf []byte, sourceType, outputType EncodeType, quality, width, height int) (imgInfo *Image, err error) {
 	img, err := imageDecode(buf, sourceType)
 	if err != nil {
 		return
@@ -115,10 +169,32 @@ func ImageOptiom(buf []byte, sourceType, outputType EncodeType, quality, width, 
 	w := img.Bounds().Dx()
 	h := img.Bounds().Dy()
 	imgInfo = &Image{
-		Data:  data,
-		Width: w,
-		Heiht: h,
-		Type:  outputType,
+		Data:   data,
+		Width:  w,
+		Height: h,
+		Type:   outputType,
+	}
+	return
+}
+
+// TextOptim text optim
+func TextOptim(data []byte, outputType EncodeType, quality int) (info *Text, err error) {
+	var buf []byte
+	t := EncodeTypeUnknown
+	switch outputType {
+	case EncodeTypeBr:
+		t = EncodeTypeBr
+		buf, err = BrotliEncode(data, quality)
+	default:
+		t = EncodeTypeGzip
+		buf, err = GzipEncode(data, quality)
+	}
+	if err != nil {
+		return
+	}
+	info = &Text{
+		Data: buf,
+		Type: t,
 	}
 	return
 }

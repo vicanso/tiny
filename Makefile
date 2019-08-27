@@ -6,18 +6,22 @@ export GO111MODULE = on
 dev:
 	fresh
 
+# build protoc
+protoc:
+	protoc -I pb/ pb/optim.proto --go_out=plugins=grpc:pb
+
 # for test
 test: export GO_ENV=test
 test:
-	go test -race -cover -tags="brotli" ./...
+	go test -race -cover ./...
 
 test-cover: export GO_ENV=test
 test-cover:
-	go test -race -tags="brotli" -coverprofile=test.out ./... && go tool cover --html=test.out
+	go test -race -coverprofile=test.out ./... && go tool cover --html=test.out
 
 build-linux:
 	packr2
-	GOOS=linux go build -tags="brotli" -o tiny-linux
+	GOOS=linux go build -o tiny-linux
 
 clean:
 	packr2 clean

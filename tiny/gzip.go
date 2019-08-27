@@ -22,7 +22,7 @@ import (
 // GzipEncode gzip compress
 func GzipEncode(buf []byte, quality int) ([]byte, error) {
 	if quality <= 0 {
-		quality = gzip.DefaultCompression
+		quality = defaultGzipQuality
 	}
 	var b bytes.Buffer
 	w, _ := gzip.NewWriterLevel(&b, quality)

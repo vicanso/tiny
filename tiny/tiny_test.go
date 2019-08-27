@@ -89,10 +89,10 @@ func TestImageOptim(t *testing.T) {
 	originalData, _ := base64.StdEncoding.DecodeString(pngBase64)
 	t.Run("convert to webp", func(t *testing.T) {
 		assert := assert.New(t)
-		img, err := ImageOptiom(originalData, EncodeTypePNG, EncodeTypeWEBP, 0, 0, 0)
+		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypeWEBP, 0, 0, 0)
 		assert.Nil(err)
 		assert.Equal(pngWidth, img.Width)
-		assert.Equal(pngHeight, img.Heiht)
+		assert.Equal(pngHeight, img.Height)
 		assert.Equal(EncodeTypeWEBP, img.Type)
 	})
 
@@ -100,10 +100,10 @@ func TestImageOptim(t *testing.T) {
 		assert := assert.New(t)
 		width := 40
 		height := 20
-		img, err := ImageOptiom(originalData, EncodeTypePNG, EncodeTypeJPEG, 0, width, height)
+		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypeJPEG, 0, width, height)
 		assert.Nil(err)
 		assert.Equal(width, img.Width)
-		assert.Equal(height, img.Heiht)
+		assert.Equal(height, img.Height)
 		assert.Equal(EncodeTypeJPEG, img.Type)
 	})
 
@@ -111,11 +111,47 @@ func TestImageOptim(t *testing.T) {
 		assert := assert.New(t)
 		width := 20
 		height := 0
-		img, err := ImageOptiom(originalData, EncodeTypePNG, EncodeTypePNG, 0, width, height)
+		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypePNG, 0, width, height)
 		assert.Nil(err)
 		assert.Equal(width, img.Width)
-		assert.Equal(10, img.Heiht)
+		assert.Equal(10, img.Height)
 		assert.Equal(EncodeTypePNG, img.Type)
 	})
+}
 
+func TestTextOptim(t *testing.T) {
+	t.Run("gzip", func(t *testing.T) {
+		assert := assert.New(t)
+		info, err := TextOptim([]byte("abcd"), EncodeTypeGzip, 0)
+		assert.Nil(err)
+		assert.Equal(EncodeTypeGzip, info.Type)
+		assert.NotNil(info.Data)
+	})
+
+	t.Run("brotli", func(t *testing.T) {
+		assert := assert.New(t)
+		info, err := TextOptim([]byte("abcd"), EncodeTypeBr, 0)
+		assert.Nil(err)
+		assert.Equal(EncodeTypeBr, info.Type)
+		assert.NotNil(info.Data)
+	})
+}
+
+func TestEncodeType(t *testing.T) {
+	assert := assert.New(t)
+	assert.Equal(Gzip, EncodeTypeGzip.String())
+	assert.Equal(Br, EncodeTypeBr.String())
+	assert.Equal(JPEG, EncodeTypeJPEG.String())
+	assert.Equal(PNG, EncodeTypePNG.String())
+	assert.Equal(WEBP, EncodeTypeWEBP.String())
+}
+
+func TestConvertToEncodeType(t *testing.T) {
+	assert := assert.New(t)
+	assert.Equal(EncodeTypeUnknown, ConvertToEncodeType(""))
+	assert.Equal(EncodeTypeGzip, ConvertToEncodeType(Gzip))
+	assert.Equal(EncodeTypeBr, ConvertToEncodeType(Br))
+	assert.Equal(EncodeTypeJPEG, ConvertToEncodeType(JPEG))
+	assert.Equal(EncodeTypePNG, ConvertToEncodeType(PNG))
+	assert.Equal(EncodeTypeWEBP, ConvertToEncodeType(WEBP))
 }

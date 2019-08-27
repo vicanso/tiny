@@ -12,28 +12,43 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package tiny
+package log
 
 import (
-	"bytes"
+	"fmt"
 
-	"github.com/andybalholm/brotli"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 )
 
-// BrotliEncode brotli encode
-func BrotliEncode(buf []byte, quality int) ([]byte, error) {
-	if quality <= 0 || quality > maxBrotliQuality {
-		quality = defauttBrotliQuality
+var (
+	defaultLogger *zap.Logger
+)
+
+type (
+	pgLogger struct {
 	}
-	buffer := new(bytes.Buffer)
-	w := brotli.NewWriterLevel(buffer, quality)
-	_, err := w.Write(buf)
+)
+
+func (l *pgLogger) Print(v ...interface{}) {
+	Default().Info("pg log",
+		zap.String("message", fmt.Sprint(v...)),
+	)
+}
+
+func init() {
+	c := zap.NewProductionConfig()
+	c.DisableCaller = true
+	c.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
+	// 只针对panic 以上的日志增加stack trace
+	l, err := c.Build(zap.AddStacktrace(zap.DPanicLevel))
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
-	err = w.Close()
-	if err != nil {
-		return nil, err
-	}
-	return buffer.Bytes(), nil
+	defaultLogger = l
+}
+
+// Default get default logger
+func Default() *zap.Logger {
+	return defaultLogger
 }

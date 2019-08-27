@@ -1,0 +1,38 @@
+// protoc -I pb/ pb/optim.proto --go_out=plugins=grpc:pb
+syntax = "proto3";
+
+package pb;
+
+enum Type {
+  UNKNOWN = 0;
+  GZIP = 1;
+  BR = 2;
+  JPEG = 3;
+  PNG = 4;
+  WEBP = 5;
+}
+
+service Optim {
+  rpc DoOptim(OptimRequest) returns (OptimReply) {}
+}
+
+// The request message for optim
+message OptimRequest {
+  // 数据类型
+  Type source = 1;
+  bytes data = 2;
+  // 输出类型
+  Type output = 6;
+  uint32 quality = 7;
+  uint32 width = 8;
+  uint32 height = 9;
+}
+
+// The response message for optim
+message OptimReply {
+  Type output = 1;
+  bytes data = 2;
+  
+  uint32 width = 8;
+  uint32 height = 9;
+}
