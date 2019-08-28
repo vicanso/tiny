@@ -13,6 +13,7 @@ RUN apt-get update \
   && cd build \
   && cmake -G"Unix Makefiles" ../ \
   && make install \
+  && cp /mozjpeg/build/cjpeg /bin/ \
   && cd /tiny \
   && make test \
   && make build-linux
