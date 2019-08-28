@@ -27,7 +27,7 @@ import (
 const (
 	defaultGzipQuality   = 6
 	defauttBrotliQuality = 6
-	maxBrotliQuality     = 9
+	maxBrotliQuality     = 11
 
 	defaultJEPGQuality = 80
 	minJPEGQuality     = 0

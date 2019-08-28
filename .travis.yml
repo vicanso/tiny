@@ -1,0 +1,7 @@
+language: go
+
+script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build -t $DOCKER_USERNAME/tiny:elton .
+  - docker push $DOCKER_USERNAME/tiny:elton
+  - docker images

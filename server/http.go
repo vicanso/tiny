@@ -240,6 +240,10 @@ func NewHTTPServer(address string) error {
 	bodyparserConf.AddDecoder(bodyparser.NewJSONDecoder())
 	d.Use(bodyparser.New(bodyparserConf))
 
+	d.GET("/ping", func(c *elton.Context) error {
+		c.BodyBuffer = bytes.NewBufferString("pong")
+		return nil
+	})
 	d.GET("/images/optim", optimImageFromURL)
 	d.POST("/images/optim", optimImageFromData)
 
