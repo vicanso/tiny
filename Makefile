@@ -20,8 +20,4 @@ test-cover:
 	go test -race -coverprofile=test.out ./... && go tool cover --html=test.out
 
 build-linux:
-	packr2
 	GOOS=linux go build -o tiny-linux
-
-clean:
-	packr2 clean
