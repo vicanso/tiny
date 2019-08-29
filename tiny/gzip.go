@@ -21,12 +21,16 @@ import (
 
 // GzipEncode gzip compress
 func GzipEncode(buf []byte, quality int) ([]byte, error) {
-	if quality <= 0 {
+	if quality <= 0 || quality > gzip.BestCompression {
 		quality = defaultGzipQuality
 	}
 	var b bytes.Buffer
-	w, _ := gzip.NewWriterLevel(&b, quality)
-	_, err := w.Write(buf)
+	w, err := gzip.NewWriterLevel(&b, quality)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = w.Write(buf)
 	if err != nil {
 		return nil, err
 	}

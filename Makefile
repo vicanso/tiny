@@ -20,4 +20,4 @@ test-cover:
 	go test -race -coverprofile=test.out ./... && go tool cover --html=test.out
 
 build-linux:
-	GOOS=linux go build -o tiny-linux
+	GOOS=linux go build -ldflags "-X main.Version=1.0.0 -X 'main.BuildAt=`date`' -X 'main.GO=`go version`'" -o tiny-linux

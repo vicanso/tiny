@@ -249,5 +249,8 @@ func NewHTTPServer(address string) error {
 
 	d.GET("/texts/optim", optimTextFromURL)
 	d.POST("/texts/optim", optimTextFromData)
+	logger.Info("http server is listening",
+		zap.String("address", address),
+	)
 	return d.ListenAndServe(address)
 }

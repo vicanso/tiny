@@ -20,6 +20,8 @@ import (
 
 	"github.com/vicanso/tiny/pb"
 	"github.com/vicanso/tiny/tiny"
+	"github.com/vicanso/tiny/log"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -106,6 +108,7 @@ func (gs *GRPCServer) DoOptim(_ context.Context, in *pb.OptimRequest) (reply *pb
 
 // NewGRPCServer new a grpc server
 func NewGRPCServer(address string) error {
+	logger := log.Default()
 	ln, err := net.Listen("tcp", address)
 	if err != nil {
 		return err
@@ -113,6 +116,8 @@ func NewGRPCServer(address string) error {
 	s := grpc.NewServer()
 	pb.RegisterOptimServer(s, &GRPCServer{})
 	reflection.Register(s)
-
+	logger.Info("grpc server is listening",
+		zap.String("address", address),
+	)
 	return s.Serve(ln)
 }

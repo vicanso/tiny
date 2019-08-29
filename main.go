@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -17,17 +19,16 @@ const (
 var (
 	httpAddress string
 	grpcAddress string
-)
 
-func init() {
-	httpAddress = os.Getenv("HTTP")
-	grpcAddress = os.Getenv("GRPC")
-	// 如果两个服务都未指定地址，则使用默认地址
-	if httpAddress == "" && grpcAddress == "" {
-		httpAddress = defaultHTTPAddress
-		grpcAddress = defaultGRPCAddress
-	}
-}
+	showVersion bool
+
+	// Version version of tiny
+	Version string
+	// BuildAt build at
+	BuildAt string
+	// GO go version
+	GO string
+)
 
 func checkHTTP() {
 	url := "http://127.0.0.1" + httpAddress + "/ping"
@@ -65,9 +66,24 @@ func healthCheck() {
 }
 
 func main() {
+	flag.BoolVar(&showVersion, "v", false, "show version")
+	flag.StringVar(&httpAddress, "http", "", "http server listen address, eg: 127.0.0.1:7001")
+	flag.StringVar(&grpcAddress, "grpc", "", "grpc server listen address, eg: 127.0.0.1:7002")
+	// TODO 由于端口可以通过参数指定，检测需要考虑怎么调整
 	if len(os.Args) > 1 && os.Args[1] == "check" {
 		healthCheck()
 		return
+	}
+	flag.Parse()
+	if showVersion {
+		fmt.Printf("version %s\nbuild at %s\n%s\n", Version, BuildAt, GO)
+		return
+	}
+
+	// 如果两个服务都未指定地址，则使用默认地址
+	if httpAddress == "" && grpcAddress == "" {
+		httpAddress = defaultHTTPAddress
+		grpcAddress = defaultGRPCAddress
 	}
 
 	if httpAddress != "" && grpcAddress != "" {

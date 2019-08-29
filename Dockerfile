@@ -23,9 +23,9 @@ FROM ubuntu
 EXPOSE 7001
 EXPOSE 7002
 
-COPY --from=builder /usr/local/bin/pngquant /bin/
+COPY --from=builder /usr/local/bin/pngquant /usr/local/bin/
 COPY --from=builder /usr/lib/x86_64-linux-gnu/libpng16.so.16 /usr/local/lib/
-COPY --from=builder /mozjpeg/build/cjpeg /bin/ 
+COPY --from=builder /mozjpeg/build/cjpeg /usr/local/bin/ 
 COPY --from=builder /mozjpeg/build/libjpeg.so.62 /usr/local/lib/
 
 COPY --from=builder /tiny/tiny-linux /usr/local/bin/tiny
@@ -33,9 +33,11 @@ COPY --from=builder /tiny/tiny-linux /usr/local/bin/tiny
 ENV LD_LIBRARY_PATH /usr/local/lib
 
 RUN apt-get update \
-  && apt-get install -y ca-certificates
+  && apt-get install -y ca-certificates \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
 
-HEALTHCHECK --interval=10s --timeout=3s \
-  CMD tiny check || exit 1
+# HEALTHCHECK --interval=10s --timeout=3s \
+#   CMD tiny check || exit 1
 
 CMD [ "tiny" ]
