@@ -29,6 +29,10 @@ const (
 	defauttBrotliQuality = 6
 	maxBrotliQuality     = 11
 
+	defaultZstdQuality = 2
+	minZstdQuality     = 1
+	maxZstdQuality     = 2
+
 	defaultJEPGQuality = 80
 	minJPEGQuality     = 0
 	maxJPEGQuality     = 100
@@ -52,6 +56,12 @@ const (
 	EncodeTypeGzip
 	// EncodeTypeBr br
 	EncodeTypeBr
+	// EncodeTypeSnappy snappy
+	EncodeTypeSnappy
+	// EncodeTypeLz4 lz4
+	EncodeTypeLz4
+	// EncodeTypeZstd zstd
+	EncodeTypeZstd
 	// EncodeTypeJPEG jpeg
 	EncodeTypeJPEG
 	// EncodeTypePNG png
@@ -65,6 +75,12 @@ const (
 	Gzip = "gzip"
 	// Br br
 	Br = "br"
+	// Snappy sz
+	Snappy = "sz"
+	// Lz4 lz4
+	Lz4 = "lz4"
+	// Zstd zstd
+	Zstd = "zstd"
 	// JPEG jpeg
 	JPEG = "jpeg"
 	// PNG png
@@ -96,6 +112,12 @@ func (t EncodeType) String() string {
 		return Gzip
 	case EncodeTypeBr:
 		return Br
+	case EncodeTypeSnappy:
+		return Snappy
+	case EncodeTypeLz4:
+		return Lz4
+	case EncodeTypeZstd:
+		return Zstd
 	case EncodeTypeJPEG:
 		return JPEG
 	case EncodeTypePNG:
@@ -114,6 +136,12 @@ func ConvertToEncodeType(t string) EncodeType {
 		return EncodeTypeGzip
 	case Br:
 		return EncodeTypeBr
+	case Snappy:
+		return EncodeTypeSnappy
+	case Lz4:
+		return EncodeTypeLz4
+	case Zstd:
+		return EncodeTypeZstd
 	case JPEG:
 		return EncodeTypeJPEG
 	case PNG:
@@ -185,6 +213,15 @@ func TextOptim(data []byte, outputType EncodeType, quality int) (info *Text, err
 	case EncodeTypeBr:
 		t = EncodeTypeBr
 		buf, err = BrotliEncode(data, quality)
+	case EncodeTypeSnappy:
+		t = EncodeTypeSnappy
+		buf, err = SnappyEncode(data)
+	case EncodeTypeLz4:
+		t = EncodeTypeLz4
+		buf, err = Lz4Encode(data, quality)
+	case EncodeTypeZstd:
+		t = EncodeTypeZstd
+		buf, err = ZstdEncode(data, quality)
 	default:
 		t = EncodeTypeGzip
 		buf, err = GzipEncode(data, quality)

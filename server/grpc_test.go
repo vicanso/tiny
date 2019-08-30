@@ -130,4 +130,44 @@ func TestDoOptim(t *testing.T) {
 		assert.Equal(pb.Type_BR, reply.Output)
 		assert.NotNil(reply.Data)
 	})
+
+	t.Run("optim to snappy", func(t *testing.T) {
+		assert := assert.New(t)
+		req := &pb.OptimRequest{
+			Output: pb.Type_SNAPPY,
+			Data:   []byte("abcd"),
+		}
+		ctx := context.Background()
+		reply, err := gs.DoOptim(ctx, req)
+		assert.Nil(err)
+		assert.Equal(pb.Type_SNAPPY, reply.Output)
+		assert.NotNil(reply.Data)
+	})
+	t.Run("optim to lz4", func(t *testing.T) {
+		assert := assert.New(t)
+		req := &pb.OptimRequest{
+			Output:  pb.Type_LZ4,
+			Data:    []byte("abcd"),
+			Quality: 6,
+		}
+		ctx := context.Background()
+		reply, err := gs.DoOptim(ctx, req)
+		assert.Nil(err)
+		assert.Equal(pb.Type_LZ4, reply.Output)
+		assert.NotNil(reply.Data)
+	})
+
+	t.Run("optim to zstd", func(t *testing.T) {
+		assert := assert.New(t)
+		req := &pb.OptimRequest{
+			Output:  pb.Type_ZSTD,
+			Data:    []byte("abcd"),
+			Quality: 6,
+		}
+		ctx := context.Background()
+		reply, err := gs.DoOptim(ctx, req)
+		assert.Nil(err)
+		assert.Equal(pb.Type_ZSTD, reply.Output)
+		assert.NotNil(reply.Data)
+	})
 }

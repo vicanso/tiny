@@ -7,9 +7,16 @@ enum Type {
   UNKNOWN = 0;
   GZIP = 1;
   BR = 2;
-  JPEG = 3;
-  PNG = 4;
-  WEBP = 5;
+  // snappy
+  SNAPPY = 3;
+  // lz4
+  LZ4 = 4;
+  // zstd
+  ZSTD = 5;
+
+  JPEG = 11;
+  PNG = 12;
+  WEBP = 13;
 }
 
 service Optim {

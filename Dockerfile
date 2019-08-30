@@ -39,5 +39,6 @@ RUN apt-get update \
 
 # HEALTHCHECK --interval=10s --timeout=3s \
 #   CMD tiny check || exit 1
+# nc -w 1 192.168.31.199 7002
 
 CMD [ "tiny" ]

@@ -18,9 +18,9 @@ import (
 	"context"
 	"net"
 
+	"github.com/vicanso/tiny/log"
 	"github.com/vicanso/tiny/pb"
 	"github.com/vicanso/tiny/tiny"
-	"github.com/vicanso/tiny/log"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -57,6 +57,12 @@ func (gs *GRPCServer) DoOptim(_ context.Context, in *pb.OptimRequest) (reply *pb
 		outputType = tiny.EncodeTypeGzip
 	case pb.Type_BR:
 		outputType = tiny.EncodeTypeBr
+	case pb.Type_SNAPPY:
+		outputType = tiny.EncodeTypeSnappy
+	case pb.Type_LZ4:
+		outputType = tiny.EncodeTypeLz4
+	case pb.Type_ZSTD:
+		outputType = tiny.EncodeTypeZstd
 	default:
 		outputType = tiny.EncodeTypeUnknown
 	}
@@ -94,12 +100,8 @@ func (gs *GRPCServer) DoOptim(_ context.Context, in *pb.OptimRequest) (reply *pb
 			return nil, err
 		}
 		reply = &pb.OptimReply{
-			Data: info.Data,
-		}
-		if info.Type == tiny.EncodeTypeBr {
-			reply.Output = pb.Type_BR
-		} else {
-			reply.Output = pb.Type_GZIP
+			Data:   info.Data,
+			Output: in.Output,
 		}
 	}
 

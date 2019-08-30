@@ -7,6 +7,9 @@ require (
 	github.com/chai2010/webp v1.1.0
 	github.com/disintegration/imaging v1.6.1
 	github.com/golang/protobuf v1.3.1
+	github.com/golang/snappy v0.0.0-20180518054509-2e65f85255db
+	github.com/klauspost/compress v1.8.1
+	github.com/pierrec/lz4 v2.0.5+incompatible
 	github.com/stretchr/testify v1.4.0
 	github.com/vicanso/elton v0.2.0
 	github.com/vicanso/elton-body-parser v0.1.3

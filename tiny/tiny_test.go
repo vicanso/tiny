@@ -135,6 +135,30 @@ func TestTextOptim(t *testing.T) {
 		assert.Equal(EncodeTypeBr, info.Type)
 		assert.NotNil(info.Data)
 	})
+
+	t.Run("snappy", func(t *testing.T) {
+		assert := assert.New(t)
+		info, err := TextOptim([]byte("abcd"), EncodeTypeSnappy, 0)
+		assert.Nil(err)
+		assert.Equal(EncodeTypeSnappy, info.Type)
+		assert.NotNil(info.Data)
+	})
+
+	t.Run("lz4", func(t *testing.T) {
+		assert := assert.New(t)
+		info, err := TextOptim([]byte("abcd"), EncodeTypeLz4, 0)
+		assert.Nil(err)
+		assert.Equal(EncodeTypeLz4, info.Type)
+		assert.NotNil(info.Data)
+	})
+
+	t.Run("zstd", func(t *testing.T) {
+		assert := assert.New(t)
+		info, err := TextOptim([]byte("abcd"), EncodeTypeZstd, 0)
+		assert.Nil(err)
+		assert.Equal(EncodeTypeZstd, info.Type)
+		assert.NotNil(info.Data)
+	})
 }
 
 func TestEncodeType(t *testing.T) {

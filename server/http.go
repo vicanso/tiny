@@ -232,6 +232,10 @@ func NewHTTPServer(address string) error {
 	// 捕捉panic异常，避免程序崩溃
 	d.Use(recover.New())
 	d.Use(responder.NewDefault())
+	d.Use(func(c *elton.Context) error {
+		c.NoCache()
+		return c.Next()
+	})
 
 	bodyparserConf := bodyparser.Config{
 		// 限制最大1MB
