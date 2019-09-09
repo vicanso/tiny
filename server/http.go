@@ -220,6 +220,10 @@ func optimTextFromData(c *elton.Context) (err error) {
 func NewHTTPServer(address string) error {
 	logger := log.Default()
 	d := elton.New()
+	d.EnableTrace = true
+	d.OnTrace(func(c *elton.Context, traceInfos elton.TraceInfos) {
+		c.SetHeader(elton.HeaderServerTiming, traceInfos.ServerTiming("tiny-"))
+	})
 	d.OnError(func(c *elton.Context, err error) {
 		// 可以针对实际场景输出更多的日志信息
 		logger.DPanic("exception",
@@ -230,28 +234,45 @@ func NewHTTPServer(address string) error {
 	})
 
 	// 捕捉panic异常，避免程序崩溃
-	d.Use(recover.New())
-	d.Use(responder.NewDefault())
-	d.Use(func(c *elton.Context) error {
+	fn := recover.New()
+	d.SetFunctionName(fn, "recover")
+	d.Use(fn)
+
+	fn = responder.NewDefault()
+	d.SetFunctionName(fn, "responder")
+	d.Use(fn)
+
+	fn = func(c *elton.Context) error {
 		c.NoCache()
 		return c.Next()
-	})
+	}
+	d.SetFunctionName(fn, "-")
+	d.Use(fn)
 
 	bodyparserConf := bodyparser.Config{
 		// 限制最大1MB
 		Limit: 1024 * 1024,
 	}
 	bodyparserConf.AddDecoder(bodyparser.NewJSONDecoder())
-	d.Use(bodyparser.New(bodyparserConf))
+	fn = bodyparser.New(bodyparserConf)
+	d.SetFunctionName(fn, "body-parser")
+	d.Use(fn)
 
 	d.GET("/ping", func(c *elton.Context) error {
 		c.BodyBuffer = bytes.NewBufferString("pong")
 		return nil
 	})
+
+	d.SetFunctionName(optimImageFromURL, "optim-image-url")
 	d.GET("/images/optim", optimImageFromURL)
+
+	d.SetFunctionName(optimImageFromData, "optim-image-data")
 	d.POST("/images/optim", optimImageFromData)
 
+	d.SetFunctionName(optimTextFromURL, "optim-text-url")
 	d.GET("/texts/optim", optimTextFromURL)
+
+	d.SetFunctionName(optimTextFromData, "optim-text-data")
 	d.POST("/texts/optim", optimTextFromData)
 	logger.Info("http server is listening",
 		zap.String("address", address),

@@ -26,7 +26,7 @@ docker run -d --restart=always \
 以brotli方式压缩文件：
 
 ```bash
-curl 'http://127.0.0.1:7001/texts/optim?url=https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js&output=br&quality=11'
+curl 'http://127.0.0.1:7001/texts/optim?output=br&quality=11&url=https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js'
 ```
 
 以POST的形式指定文本压缩：
@@ -41,7 +41,7 @@ curl -XPOST -H 'Content-Type:application/json' -d '{
 将png转换为webp:
 
 ```bash
-curl 'http://127.0.0.1:7001/images/optim?url=https://www.baidu.com/img/bd_logo1.png&output=webp&quality=80'
+curl 'http://127.0.0.1:7001/images/optim?output=webp&quality=80&url=https://www.baidu.com/img/bd_logo1.png'
 ```
 
 以POST的形式指定图片转换：
@@ -55,3 +55,6 @@ curl -XPOST -H 'Content-Type:application/json' -d '{
 	"height": 0
 }' 'http://127.0.0.1:7001/images/optim'
 ```
+
+## 客户端
+
