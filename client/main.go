@@ -56,6 +56,11 @@ type (
 	}
 )
 
+const (
+	pngExt  = "png"
+	webpExt = "webp"
+)
+
 // glob get match files
 func glob(path, reg string) (matches []string, err error) {
 	r, err := regexp.Compile(reg)
@@ -82,10 +87,11 @@ func glob(path, reg string) (matches []string, err error) {
 
 func getParams() (params *Params, err error) {
 	source := flag.String("source", ".", "search path")
-	target := flag.String("target", "", "optim target path(new image will save to this path)")
+	target := flag.String("target", "", "optim target path, new image will save to this path")
 	pngQuality := flag.Int("png", 90, "the quality of png, it should be >= 0 and <= 100")
 	jpegQuality := flag.Int("jpeg", 80, "the quality of jpeg, it should be >= 0 and <= 100")
-	server := flag.String("server", "127.0.0.1:7002", "grpc server address")
+	webpQuality := flag.Int("webp", 0, "the quality of webp, it should be >= 0 and <= 100")
+	server := flag.String("server", "tiny.aslant.site:7002", "grpc server address")
 	filter := flag.String("filter", ".(png|jpg|jpeg)$", "filter regexp for image")
 
 	flag.Parse()
@@ -111,6 +117,7 @@ func getParams() (params *Params, err error) {
 		Filter:      *filter,
 		PNGQuality:  *pngQuality,
 		JPEGQuality: *jpegQuality,
+		WEBPQuality: *webpQuality,
 	}
 	return
 }
@@ -124,17 +131,17 @@ func optim(conn *grpc.ClientConn, params *OptimParams) (data []byte, err error) 
 		Quality: uint32(params.Quality),
 	}
 	switch params.Type {
-	case "png":
+	case pngExt:
 		in.Output = pb.Type_PNG
-	case "webp":
+	case webpExt:
 		in.Output = pb.Type_WEBP
 	default:
 		in.Output = pb.Type_JPEG
 	}
 	switch params.SourceType {
-	case "png":
+	case pngExt:
 		in.Source = pb.Type_PNG
-	case "webp":
+	case webpExt:
 		in.Source = pb.Type_WEBP
 	default:
 		in.Source = pb.Type_JPEG
@@ -159,9 +166,12 @@ func getOptimParams(file string, params *Params) (optimParams *OptimParams, err 
 		SourceType: extType,
 		Data:       buf,
 	}
-	if extType == "png" {
+	switch extType {
+	case pngExt:
 		optimParams.Quality = params.PNGQuality
-	} else {
+	case webpExt:
+		optimParams.Quality = params.WEBPQuality
+	default:
 		optimParams.Quality = params.JPEGQuality
 	}
 	return
@@ -171,19 +181,6 @@ func main() {
 	params, err := getParams()
 	if err != nil {
 		log.Println(err.Error())
-		os.Exit(1)
-		return
-	}
-	extList := make([]string, 0)
-	if params.PNGQuality != 0 {
-		extList = append(extList, "png")
-	}
-	if params.JPEGQuality != 0 {
-		extList = append(extList, "jpg")
-		extList = append(extList, "jpeg")
-	}
-	if len(extList) == 0 {
-		log.Println("no image should be optim")
 		os.Exit(1)
 		return
 	}
@@ -202,6 +199,7 @@ func main() {
 	defer conn.Close()
 
 	bar := processBar.StartNew(len(result))
+	// 限制最多5个并发
 	limiter := make(chan bool, 5)
 	wg := new(sync.WaitGroup)
 	var originalSizeCount uint64
@@ -210,6 +208,7 @@ func main() {
 	startedAt := time.Now()
 	failList := make([]string, 0)
 	mutex := new(sync.Mutex)
+	// 记录失败文件
 	addFail := func(file string, err error) {
 		mutex.Lock()
 		defer mutex.Unlock()
@@ -239,7 +238,7 @@ func main() {
 				data = optimParams.Data
 			}
 			newFile := strings.Replace(file, params.SourcePath, params.TargetPath, 1)
-
+			// 创建目录
 			os.MkdirAll(filepath.Dir(newFile), os.ModePerm)
 			err = ioutil.WriteFile(newFile, data, 0666)
 			if err != nil {
@@ -254,7 +253,7 @@ func main() {
 	wg.Wait()
 	bar.Finish()
 	template := `********************************TINY********************************
-Optimize Images is done, use:%s
+Optimize images is done, use:%s
 Success(%d) Fail(%d) 
 Space size reduce from %s to %s
 Fails: %s
