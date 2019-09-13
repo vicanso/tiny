@@ -18,7 +18,7 @@ docker run -d --restart=always \
   -p 7001:7001 \
   -p 7002:7002 \
   --name=tiny \
-  vicanso/tiny:elton
+  vicanso/tiny
 ```
 
 其中7001提供HTTP服务，7002提供GRPC服务。
@@ -81,7 +81,7 @@ Usage of tiny:
     	the quality of webp, it should be >= 0 and <= 100
 ```
 
-使用默认参数将`/Downloads`目录下的图片压缩优化并保存至`/tmp/images`中：
+其中启动自己的tiny server，避免网络传输带来的压缩延迟。使用默认参数将`/Downloads`目录下的图片压缩优化并保存至`/tmp/images`中：
 
 ```
 tiny -source=/Downloads -target=/tmp/images
