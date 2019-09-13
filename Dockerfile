@@ -16,7 +16,7 @@ RUN apt-get update \
   && cp /mozjpeg/build/cjpeg /bin/ \
   && cd /tiny \
   && make test \
-  && make build-linux
+  && make build
 
 FROM ubuntu
 
@@ -28,7 +28,7 @@ COPY --from=builder /usr/lib/x86_64-linux-gnu/libpng16.so.16 /usr/local/lib/
 COPY --from=builder /mozjpeg/build/cjpeg /usr/local/bin/ 
 COPY --from=builder /mozjpeg/build/libjpeg.so.62 /usr/local/lib/
 
-COPY --from=builder /tiny/tiny-linux /usr/local/bin/tiny
+COPY --from=builder /tiny/tiny-server /usr/local/bin/tiny-server
 
 ENV LD_LIBRARY_PATH /usr/local/lib
 
@@ -41,4 +41,4 @@ RUN apt-get update \
 #   CMD tiny check || exit 1
 # nc -w 1 192.168.31.199 7002
 
-CMD [ "tiny" ]
+CMD [ "tiny-server" ]
