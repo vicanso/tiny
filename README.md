@@ -84,7 +84,7 @@ Usage of tiny:
     	the quality of webp, it should be >= 0 and <= 100
 ```
 
-其中启动自己的tiny server，避免网络传输带来的压缩延迟。使用默认参数将`/Downloads`目录下的图片压缩优化并保存至`/tmp/images`中：
+平时常用中，建议启动自己的tiny server，将`-server`参数指定为该服务，避免网络传输带来的压缩延迟。使用默认参数将`/Downloads`目录下的图片压缩优化并保存至`/tmp/images`中：
 
 ```
 tiny -source=/Downloads -target=/tmp/images
