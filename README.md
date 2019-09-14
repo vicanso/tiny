@@ -2,6 +2,9 @@
 
 提供图片的转换处理以及文本的压缩，有`HTTP`与`GRPC`的调用方式，建议配合[tiny-site](https://github.com/vicanso/tiny-site)使用。
 
+- `png` PNG的优化处理使用`pngquant`
+- `jpeg` JEPG的优化处理使用`mozjpeg`
+
 - 图片支持`webp`, `jpeg`, `png`
 - 数据压缩支持`brotli`, `gzip`, `snappy`, `lz4`, `zstd`
 
