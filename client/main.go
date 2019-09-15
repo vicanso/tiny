@@ -254,6 +254,7 @@ func main() {
 	bar.Finish()
 	template := `********************************TINY********************************
 Optimize images is done, use:%s
+Source: %s, Target: %s
 Success(%d) Fail(%d) 
 Space size reduce from %s to %s
 Fails: %s
@@ -264,6 +265,8 @@ Fails: %s
 	}
 	fmt.Println(fmt.Sprintf(template,
 		time.Since(startedAt).String(),
+		params.SourcePath,
+		params.TargetPath,
 		successCount,
 		uint32(len(result))-successCount,
 		humanize.Bytes(originalSizeCount),
