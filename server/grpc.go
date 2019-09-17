@@ -84,7 +84,8 @@ func (gs *GRPCServer) DoOptim(_ context.Context, in *pb.OptimRequest) (reply *pb
 			err = errOutputTypeIsInvalid
 			return
 		}
-		imgInfo, err := tiny.ImageOptim(in.Data, encodeType, outputType, quality, int(in.Width), int(in.Height))
+		crop := tiny.CropType(in.Crop)
+		imgInfo, err := tiny.ImageOptim(in.Data, encodeType, outputType, crop, quality, int(in.Width), int(in.Height))
 		if err != nil {
 			return nil, err
 		}

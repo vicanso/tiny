@@ -5,9 +5,12 @@ go 1.13
 require (
 	github.com/andybalholm/brotli v0.0.0-20190821151343-b60f0d972eeb
 	github.com/chai2010/webp v1.1.0
+	github.com/cheggaaa/pb/v3 v3.0.1 // indirect
 	github.com/disintegration/imaging v1.6.1
+	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/golang/protobuf v1.3.2
 	github.com/golang/snappy v0.0.1
+	github.com/hashicorp/go-multierror v1.0.0 // indirect
 	github.com/klauspost/compress v1.8.2
 	github.com/pierrec/lz4 v2.3.0+incompatible
 	github.com/stretchr/testify v1.3.0

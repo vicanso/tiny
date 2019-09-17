@@ -33,6 +33,8 @@ message OptimRequest {
   uint32 quality = 7;
   uint32 width = 8;
   uint32 height = 9;
+  // 裁剪类型
+  uint32 crop = 10;
 }
 
 // The response message for optim

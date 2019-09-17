@@ -36,12 +36,13 @@ import (
 
 type (
 	optimImageParams struct {
-		Data    string `json:"data,omitempty"`
-		Source  string `json:"source,omitempty"`
-		Output  string `json:"output,omitempty"`
-		Quality int    `json:"quality,omitempty"`
-		Width   int    `json:"width,omitempty"`
-		Height  int    `json:"height,omitempty"`
+		Data    string        `json:"data,omitempty"`
+		Source  string        `json:"source,omitempty"`
+		Output  string        `json:"output,omitempty"`
+		Crop    tiny.CropType `json:"crop,omitempty"`
+		Quality int           `json:"quality,omitempty"`
+		Width   int           `json:"width,omitempty"`
+		Height  int           `json:"height,omitempty"`
 	}
 	optimTextParams struct {
 		Data    string `json:"data,omitempty"`
@@ -119,7 +120,8 @@ func optimImageFromURL(c *elton.Context) (err error) {
 	width := getIntValue(c, "width")
 	height := getIntValue(c, "height")
 	quality := getIntValue(c, "quality")
-	imgInfo, err := tiny.ImageOptim(resp.Data, encodeType, outputType, quality, width, height)
+	cropType := tiny.CropType(getIntValue(c, "crop"))
+	imgInfo, err := tiny.ImageOptim(resp.Data, encodeType, outputType, cropType, quality, width, height)
 	if err != nil {
 		return
 	}
@@ -153,7 +155,7 @@ func optimImageFromData(c *elton.Context) (err error) {
 	if outputType == tiny.EncodeTypeUnknown {
 		outputType = encodeType
 	}
-	imgInfo, err := tiny.ImageOptim(data, encodeType, outputType, params.Quality, params.Width, params.Height)
+	imgInfo, err := tiny.ImageOptim(data, encodeType, outputType, params.Crop, params.Quality, params.Width, params.Height)
 	if err != nil {
 		return
 	}

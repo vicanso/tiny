@@ -49,6 +49,9 @@ const (
 // EncodeType encode type
 type EncodeType int
 
+// CropType crop type
+type CropType int
+
 const (
 	// EncodeTypeUnknown unknown
 	EncodeTypeUnknown EncodeType = iota
@@ -68,6 +71,29 @@ const (
 	EncodeTypePNG
 	// EncodeTypeWEBP webp
 	EncodeTypeWEBP
+)
+
+const (
+	// CropNone none crop
+	CropNone CropType = iota
+	// CropLeftTop crop left top
+	CropLeftTop
+	// CropTopCenter crop top center
+	CropTopCenter
+	// CropRightTop crop right top
+	CropRightTop
+	// CropLeftCenter crop left center
+	CropLeftCenter
+	// CropCenterCenter crop center center
+	CropCenterCenter
+	// CropRightCenter crop right center
+	CropRightCenter
+	// CropLeftBottom crop left bottom
+	CropLeftBottom
+	// CropBottomCenter crop bottom center
+	CropBottomCenter
+	// CropRightBottom crop right bottom
+	CropRightBottom
 )
 
 const (
@@ -171,14 +197,68 @@ func ImageResize(img image.Image, width, height int) image.Image {
 	return imaging.Resize(img, width, height, imaging.Lanczos)
 }
 
+// ImageCrop crop image
+func ImageCrop(img image.Image, cropType CropType, width, height int) image.Image {
+	currentWidth := img.Bounds().Dx()
+	currentHeight := img.Bounds().Dy()
+	if width == 0 || width > currentWidth {
+		width = currentWidth
+	}
+	if height == 0 || height > currentHeight {
+		height = currentHeight
+	}
+	var x0, y0, x1, y1 int
+	switch cropType {
+	case CropLeftTop:
+		x0 = 0
+		y0 = 0
+	case CropTopCenter:
+		x0 = (currentWidth - width) / 2
+		y0 = 0
+	case CropRightTop:
+		x0 = (currentWidth - width)
+		y0 = 0
+	case CropLeftCenter:
+		x0 = 0
+		y0 = (currentHeight - height) / 2
+	case CropCenterCenter:
+		x0 = (currentWidth - width) / 2
+		y0 = (currentHeight - height) / 2
+	case CropRightCenter:
+		x0 = currentWidth - width
+		y0 = (currentHeight - height) / 2
+	case CropLeftBottom:
+		x0 = 0
+		y0 = currentHeight - height
+	case CropBottomCenter:
+		x0 = (currentWidth - width) / 2
+		y0 = currentHeight - height
+	case CropRightBottom:
+		x0 = currentWidth - width
+		y0 = currentHeight - height
+	default:
+		// 其它的裁切类型不处理
+	}
+	x1 = x0 + width
+	y1 = y0 + height
+
+	rect := image.Rect(x0, y0, x1, y1)
+	return imaging.Crop(img, rect)
+}
+
 // ImageOptim image optim
-func ImageOptim(buf []byte, sourceType, outputType EncodeType, quality, width, height int) (imgInfo *Image, err error) {
+func ImageOptim(buf []byte, sourceType, outputType EncodeType, cropType CropType, quality, width, height int) (imgInfo *Image, err error) {
 	img, err := imageDecode(buf, sourceType)
 	if err != nil {
 		return
 	}
 	if width != 0 || height != 0 {
-		img = ImageResize(img, width, height)
+		// 如果不需要裁剪
+		if cropType == CropNone {
+			img = ImageResize(img, width, height)
+		} else {
+			img = ImageCrop(img, cropType, width, height)
+		}
 	}
 	var data []byte
 	switch outputType {

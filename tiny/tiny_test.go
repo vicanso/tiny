@@ -85,11 +85,93 @@ func TestImageDecode(t *testing.T) {
 	})
 }
 
+func TestImageCrop(t *testing.T) {
+	originalImg := getTestImage()
+	t.Run("left top", func(t *testing.T) {
+		assert := assert.New(t)
+		width := 10
+		height := 20
+		img := ImageCrop(originalImg, CropLeftTop, width, height)
+		assert.Equal(width, img.Bounds().Dx())
+		assert.Equal(height, img.Bounds().Dy())
+	})
+
+	t.Run("top center", func(t *testing.T) {
+		assert := assert.New(t)
+		width := 10
+		img := ImageCrop(originalImg, CropTopCenter, width, 0)
+		assert.Equal(width, img.Bounds().Dx())
+		assert.Equal(pngHeight, img.Bounds().Dy())
+	})
+
+	t.Run("right top", func(t *testing.T) {
+		assert := assert.New(t)
+		width := 10
+		height := 20
+		img := ImageCrop(originalImg, CropRightTop, width, height)
+		assert.Equal(width, img.Bounds().Dx())
+		assert.Equal(height, img.Bounds().Dy())
+	})
+
+	t.Run("left center", func(t *testing.T) {
+		assert := assert.New(t)
+		width := 10
+		img := ImageCrop(originalImg, CropLeftCenter, width, 0)
+		assert.Equal(width, img.Bounds().Dx())
+		assert.Equal(pngHeight, img.Bounds().Dy())
+	})
+
+	t.Run("center center", func(t *testing.T) {
+		assert := assert.New(t)
+		width := 10
+		height := 20
+		img := ImageCrop(originalImg, CropCenterCenter, width, height)
+		assert.Equal(width, img.Bounds().Dx())
+		assert.Equal(height, img.Bounds().Dy())
+	})
+
+	t.Run("right center", func(t *testing.T) {
+		assert := assert.New(t)
+		width := 10
+		height := 20
+		img := ImageCrop(originalImg, CropRightCenter, width, height)
+		assert.Equal(width, img.Bounds().Dx())
+		assert.Equal(height, img.Bounds().Dy())
+	})
+
+	t.Run("left bottom", func(t *testing.T) {
+		assert := assert.New(t)
+		width := 10
+		height := 20
+		img := ImageCrop(originalImg, CropLeftBottom, width, height)
+		assert.Equal(width, img.Bounds().Dx())
+		assert.Equal(height, img.Bounds().Dy())
+	})
+
+	t.Run("bottom center", func(t *testing.T) {
+		assert := assert.New(t)
+		width := 10
+		height := 20
+		img := ImageCrop(originalImg, CropBottomCenter, width, height)
+		assert.Equal(width, img.Bounds().Dx())
+		assert.Equal(height, img.Bounds().Dy())
+	})
+
+	t.Run("right bottom", func(t *testing.T) {
+		assert := assert.New(t)
+		width := 10
+		height := 20
+		img := ImageCrop(originalImg, CropRightBottom, width, height)
+		assert.Equal(width, img.Bounds().Dx())
+		assert.Equal(height, img.Bounds().Dy())
+	})
+}
+
 func TestImageOptim(t *testing.T) {
 	originalData, _ := base64.StdEncoding.DecodeString(pngBase64)
 	t.Run("convert to webp", func(t *testing.T) {
 		assert := assert.New(t)
-		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypeWEBP, 0, 0, 0)
+		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypeWEBP, CropNone, 0, 0, 0)
 		assert.Nil(err)
 		assert.Equal(pngWidth, img.Width)
 		assert.Equal(pngHeight, img.Height)
@@ -100,7 +182,7 @@ func TestImageOptim(t *testing.T) {
 		assert := assert.New(t)
 		width := 40
 		height := 20
-		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypeJPEG, 0, width, height)
+		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypeJPEG, CropNone, 0, width, height)
 		assert.Nil(err)
 		assert.Equal(width, img.Width)
 		assert.Equal(height, img.Height)
@@ -111,10 +193,21 @@ func TestImageOptim(t *testing.T) {
 		assert := assert.New(t)
 		width := 20
 		height := 0
-		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypePNG, 0, width, height)
+		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypePNG, CropNone, 0, width, height)
 		assert.Nil(err)
 		assert.Equal(width, img.Width)
 		assert.Equal(10, img.Height)
+		assert.Equal(EncodeTypePNG, img.Type)
+	})
+
+	t.Run("crop and convert to png", func(t *testing.T) {
+		assert := assert.New(t)
+		width := 20
+		height := 0
+		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypePNG, CropLeftTop, 0, width, height)
+		assert.Nil(err)
+		assert.Equal(width, img.Width)
+		assert.Equal(pngHeight, img.Height)
 		assert.Equal(EncodeTypePNG, img.Type)
 	})
 }
