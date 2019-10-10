@@ -8,7 +8,7 @@ dev:
 
 # build protoc
 protoc:
-	protoc -I pb/ pb/optim.proto --go_out=plugins=grpc:pb
+	protoc -I pb/ pb/optim.proto --gofast_out=plugins=grpc:pb
 
 # for test
 test: export GO_ENV=test

@@ -10,6 +10,12 @@
 
 ## 编译proto
 
+需要先安装`protoc-gen-gofast`：
+
+```bash
+go get github.com/gogo/protobuf/protoc-gen-gofast
+```
+
 ```bash
 make protoc
 ```
