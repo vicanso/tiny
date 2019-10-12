@@ -34,7 +34,7 @@ docker run -d --restart=always \
 
 ### 示例
 
-以brotli方式压缩文件：
+以brotli方式压缩文件（需要注意，只有HTTPS或者以IP形式打开，chrome才支持br）：
 
 ```bash
 curl 'http://127.0.0.1:7001/texts/optim?output=br&quality=11&url=https://cdn.staticfile.org/jquery/3.4.1/jquery.min.js'

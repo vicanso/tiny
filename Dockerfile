@@ -33,12 +33,11 @@ COPY --from=builder /tiny/tiny-server /usr/local/bin/tiny-server
 ENV LD_LIBRARY_PATH /usr/local/lib
 
 RUN apt-get update \
-  && apt-get install -y ca-certificates \
+  && apt-get install -y ca-certificates netcat \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-# HEALTHCHECK --interval=10s --timeout=3s \
-#   CMD tiny check || exit 1
-# nc -w 1 192.168.31.199 7002
+HEALTHCHECK --interval=10s --timeout=3s \
+  CMD nc -w 1 127.0.0.1 7002
 
 CMD [ "tiny-server" ]
