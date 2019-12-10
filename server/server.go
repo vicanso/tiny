@@ -17,7 +17,6 @@ package server
 import "github.com/vicanso/hes"
 
 var (
-	errOutputIsNil               = hes.New("output can not be nil")
 	errOutputTypeIsInvalid       = hes.New("output type is not supported")
 	errURLIsNil                  = hes.New("url can not be nil")
 	errContentTypeIsNil          = hes.New("can not get content type of resource")

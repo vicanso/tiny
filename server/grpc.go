@@ -33,7 +33,7 @@ type (
 
 // DoOptim do optim
 func (gs *GRPCServer) DoOptim(_ context.Context, in *pb.OptimRequest) (reply *pb.OptimReply, err error) {
-	encodeType := tiny.EncodeTypeUnknown
+	var encodeType tiny.EncodeType
 	switch in.Source {
 	case pb.Type_JPEG:
 		encodeType = tiny.EncodeTypeJPEG
@@ -45,7 +45,7 @@ func (gs *GRPCServer) DoOptim(_ context.Context, in *pb.OptimRequest) (reply *pb
 		encodeType = tiny.EncodeTypeUnknown
 	}
 
-	outputType := tiny.EncodeTypeUnknown
+	var outputType tiny.EncodeType
 	switch in.Output {
 	case pb.Type_JPEG:
 		outputType = tiny.EncodeTypeJPEG

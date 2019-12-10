@@ -21,3 +21,6 @@ test-cover:
 
 build:
 	go build -ldflags "-X main.Version=1.0.0 -X 'main.BuildAt=`date`' -X 'main.GO=`go version`'" -o tiny-server
+
+lint:
+	golangci-lint run

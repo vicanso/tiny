@@ -15,8 +15,6 @@
 package log
 
 import (
-	"fmt"
-
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -24,17 +22,6 @@ import (
 var (
 	defaultLogger *zap.Logger
 )
-
-type (
-	pgLogger struct {
-	}
-)
-
-func (l *pgLogger) Print(v ...interface{}) {
-	Default().Info("pg log",
-		zap.String("message", fmt.Sprint(v...)),
-	)
-}
 
 func init() {
 	c := zap.NewProductionConfig()

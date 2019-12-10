@@ -288,7 +288,7 @@ func ImageOptim(buf []byte, sourceType, outputType EncodeType, cropType CropType
 // TextOptim text optim
 func TextOptim(data []byte, outputType EncodeType, quality int) (info *Text, err error) {
 	var buf []byte
-	t := EncodeTypeUnknown
+	var t EncodeType
 	switch outputType {
 	case EncodeTypeBr:
 		t = EncodeTypeBr

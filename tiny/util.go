@@ -32,7 +32,6 @@ const (
 	letterIdxMask = 1<<letterIdxBits - 1 // All 1-bits, as many as letterIdxBits
 	letterIdxMax  = 63 / letterIdxBits   // # of letter indices fitting in 63 bits
 )
-const digitBytes = "0123456789"
 
 // randomString create a random string
 func randomString(baseLetters string, n int) string {
