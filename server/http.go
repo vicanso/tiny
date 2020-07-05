@@ -24,9 +24,7 @@ import (
 	"time"
 
 	"github.com/vicanso/elton"
-	bodyparser "github.com/vicanso/elton-body-parser"
-	recover "github.com/vicanso/elton-recover"
-	responder "github.com/vicanso/elton-responder"
+	M "github.com/vicanso/elton/middleware"
 	"github.com/vicanso/go-axios"
 	"github.com/vicanso/hes"
 	"github.com/vicanso/tiny/log"
@@ -236,11 +234,11 @@ func NewHTTPServer(address string) error {
 	})
 
 	// 捕捉panic异常，避免程序崩溃
-	fn := recover.New()
+	fn := M.NewRecover()
 	d.SetFunctionName(fn, "recover")
 	d.Use(fn)
 
-	fn = responder.NewDefault()
+	fn = M.NewDefaultResponder()
 	d.SetFunctionName(fn, "responder")
 	d.Use(fn)
 
@@ -251,12 +249,13 @@ func NewHTTPServer(address string) error {
 	d.SetFunctionName(fn, "-")
 	d.Use(fn)
 
-	bodyparserConf := bodyparser.Config{
+	bodyparserConf := M.BodyParserConfig{
 		// 限制最大1MB
 		Limit: 1024 * 1024,
 	}
-	bodyparserConf.AddDecoder(bodyparser.NewJSONDecoder())
-	fn = bodyparser.New(bodyparserConf)
+	bodyparserConf.AddDecoder(M.NewJSONDecoder())
+
+	fn = M.NewBodyParser(bodyparserConf)
 	d.SetFunctionName(fn, "body-parser")
 	d.Use(fn)
 
