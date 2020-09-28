@@ -162,7 +162,7 @@ func TestOptimTextFromURL(t *testing.T) {
 
 		c := elton.NewContext(nil, req)
 		err := optimTextFromURL(c)
-		assert.Equal("code=400, message=http request fail", err.Error())
+		assert.Equal("http request fail", err.Error())
 	})
 
 	t.Run("invalid output", func(t *testing.T) {
