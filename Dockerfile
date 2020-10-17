@@ -1,13 +1,13 @@
-FROM golang:1.14 as builder
+FROM golang:1.15 as builder
 
 ADD . /tiny
 
 RUN apt-get update \
   && apt-get install -y git cmake libpng-dev autoconf automake libtool nasm make \
-  && git clone --depth=1 https://github.com/kornelski/pngquant.git /pngquant \
+  && git clone -b 2.12.6 --depth=1 https://github.com/kornelski/pngquant.git /pngquant \
   && cd /pngquant \
   && make && make install \
-  && git clone --depth=1 https://github.com/mozilla/mozjpeg.git /mozjpeg \
+  && git clone -b v4.0.1-rc2 --depth=1 https://github.com/mozilla/mozjpeg.git /mozjpeg \
   && cd /mozjpeg \
   && mkdir build \
   && cd build \
