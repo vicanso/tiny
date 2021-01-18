@@ -19,6 +19,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+	"mime"
 	"strconv"
 	"strings"
 	"time"
@@ -63,6 +64,10 @@ var (
 		},
 	})
 )
+
+func init() {
+	mime.AddExtensionType("."+tiny.AVIF, "image/avif")
+}
 
 // newConvertResponseToError convert http response(4xx, 5xx) to error
 func newConvertResponseToError() axios.ResponseInterceptor {

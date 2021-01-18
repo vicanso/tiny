@@ -17,6 +17,8 @@ enum Type {
   JPEG = 11;
   PNG = 12;
   WEBP = 13;
+  // AVIF
+  AVIF = 14;
 }
 
 service Optim {

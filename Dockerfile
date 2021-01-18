@@ -3,7 +3,9 @@ FROM golang:1.15 as builder
 ADD . /tiny
 
 RUN apt-get update \
-  && apt-get install -y git cmake libpng-dev autoconf automake libtool nasm make \
+  && apt-get install -y git cmake libpng-dev autoconf automake libtool nasm make wget \
+  && wget https://github.com/kornelski/cavif-rs/releases/download/v0.6.5/cavif_0.6.5_amd64.deb \
+  && dpkg -i cavif_0.6.5_amd64.deb \
   && git clone -b 2.12.6 --depth=1 https://github.com/kornelski/pngquant.git /pngquant \
   && cd /pngquant \
   && make && make install \
@@ -29,6 +31,8 @@ COPY --from=builder /mozjpeg/build/cjpeg /usr/local/bin/
 COPY --from=builder /mozjpeg/build/libjpeg.so.62 /usr/local/lib/
 
 COPY --from=builder /tiny/tiny-server /usr/local/bin/tiny-server
+
+COPY --from=builder /usr/bin/cavif /usr/local/bin/cavif
 
 ENV LD_LIBRARY_PATH /usr/local/lib
 

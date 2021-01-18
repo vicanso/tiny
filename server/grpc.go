@@ -51,6 +51,8 @@ func (gs *GRPCServer) DoOptim(_ context.Context, in *pb.OptimRequest) (reply *pb
 		outputType = tiny.EncodeTypeJPEG
 	case pb.Type_PNG:
 		outputType = tiny.EncodeTypePNG
+	case pb.Type_AVIF:
+		outputType = tiny.EncodeTypeAVIF
 	case pb.Type_WEBP:
 		outputType = tiny.EncodeTypeWEBP
 	case pb.Type_GZIP:

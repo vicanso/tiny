@@ -44,6 +44,10 @@ const (
 	defaultWEBPQuality = 80
 	minWEBPQuality     = 0
 	maxWEBPQuality     = 100
+
+	defaultAvifQuality = 80
+	minAvifQuality     = 0
+	maxAvifQuality     = 100
 )
 
 // EncodeType encode type
@@ -71,6 +75,8 @@ const (
 	EncodeTypePNG
 	// EncodeTypeWEBP webp
 	EncodeTypeWEBP
+	// EncodeTypeAVIF avif
+	EncodeTypeAVIF
 )
 
 const (
@@ -113,6 +119,8 @@ const (
 	PNG = "png"
 	// WEBP webp
 	WEBP = "webp"
+	// AVIF avif
+	AVIF = "avif"
 )
 
 type (
@@ -150,6 +158,8 @@ func (t EncodeType) String() string {
 		return PNG
 	case EncodeTypeWEBP:
 		return WEBP
+	case EncodeTypeAVIF:
+		return AVIF
 	}
 }
 
@@ -174,6 +184,8 @@ func ConvertToEncodeType(t string) EncodeType {
 		return EncodeTypePNG
 	case WEBP:
 		return EncodeTypeWEBP
+	case AVIF:
+		return EncodeTypeAVIF
 	}
 }
 
@@ -266,6 +278,8 @@ func ImageOptim(buf []byte, sourceType, outputType EncodeType, cropType CropType
 		data, err = JPEGEncode(img, quality)
 	case EncodeTypePNG:
 		data, err = PNGEncode(img, quality)
+	case EncodeTypeAVIF:
+		data, err = AVIFEncode(img, quality)
 	case EncodeTypeWEBP:
 		data, err = WEBPEncode(img, quality)
 	default:

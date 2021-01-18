@@ -15,23 +15,16 @@
 package tiny
 
 import (
-	"bytes"
-
 	"github.com/pierrec/lz4"
 )
 
 // Lz4Encode lz4 encode
-func Lz4Encode(buf []byte, quality int) ([]byte, error) {
-	buffer := new(bytes.Buffer)
-	w := lz4.NewWriter(buffer)
-	w.Header.CompressionLevel = quality
-	_, err := w.Write(buf)
+func Lz4Encode(data []byte, quality int) ([]byte, error) {
+	buf := make([]byte, len(data))
+	n, err := lz4.CompressBlock(data, buf, nil)
 	if err != nil {
 		return nil, err
 	}
-	err = w.Close()
-	if err != nil {
-		return nil, err
-	}
-	return buffer.Bytes(), nil
+	buf = buf[:n]
+	return buf, nil
 }
