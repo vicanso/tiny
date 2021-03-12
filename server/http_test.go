@@ -117,7 +117,7 @@ func TestOptimImageFromData(t *testing.T) {
 		}`)
 		err := optimImageFromData(c)
 		assert.NotNil(err)
-		assert.True(strings.HasPrefix(err.Error(), "message=illegal base64 data"))
+		assert.True(strings.Contains(err.Error(), "message=illegal base64 data"))
 	})
 
 	t.Run("not support source type", func(t *testing.T) {
