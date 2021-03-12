@@ -1,15 +1,15 @@
-FROM golang:1.15 as builder
+FROM golang:1.16 as builder
 
 ADD . /tiny
 
 RUN apt-get update \
   && apt-get install -y git cmake libpng-dev autoconf automake libtool nasm make wget \
-  && wget https://github.com/kornelski/cavif-rs/releases/download/v0.6.5/cavif_0.6.5_amd64.deb \
-  && dpkg -i cavif_0.6.5_amd64.deb \
-  && git clone -b 2.12.6 --depth=1 https://github.com/kornelski/pngquant.git /pngquant \
+  && wget https://github.com/kornelski/cavif-rs/releases/download/v0.6.6/cavif_0.6.6_amd64.deb \
+  && dpkg -i cavif_0.6.6_amd64.deb \
+  && git clone -b 2.14.1 --depth=1 https://github.com/kornelski/pngquant.git /pngquant \
   && cd /pngquant \
   && make && make install \
-  && git clone -b v4.0.1-rc2 --depth=1 https://github.com/mozilla/mozjpeg.git /mozjpeg \
+  && git clone -b v4.0.3 --depth=1 https://github.com/mozilla/mozjpeg.git /mozjpeg \
   && cd /mozjpeg \
   && mkdir build \
   && cd build \
