@@ -30,6 +30,6 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tiny:1.1.0
+        tags: ${{ secrets.DOCKER_HUB_USERNAME }}/tiny
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
