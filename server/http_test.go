@@ -103,7 +103,7 @@ func TestOptimImageFromURL(t *testing.T) {
 func TestOptimImageFromData(t *testing.T) {
 	t.Run("image is nil", func(t *testing.T) {
 		assert := assert.New(t)
-		c := elton.NewContext(nil, nil)
+		c := elton.NewContext(nil, httptest.NewRequest("GET", "/", nil))
 		c.RequestBody = []byte(`{}`)
 		err := optimImageFromData(c)
 		assert.Equal(errImageIsNil, err)
@@ -111,7 +111,7 @@ func TestOptimImageFromData(t *testing.T) {
 
 	t.Run("base64 encode fail", func(t *testing.T) {
 		assert := assert.New(t)
-		c := elton.NewContext(nil, nil)
+		c := elton.NewContext(nil, httptest.NewRequest("GET", "/", nil))
 		c.RequestBody = []byte(`{
 			"data": "a"
 		}`)
@@ -122,7 +122,7 @@ func TestOptimImageFromData(t *testing.T) {
 
 	t.Run("not support source type", func(t *testing.T) {
 		assert := assert.New(t)
-		c := elton.NewContext(nil, nil)
+		c := elton.NewContext(nil, httptest.NewRequest("GET", "/", nil))
 		c.RequestBody = []byte(`{
 			"data": "` + jpegBase64 + `"
 		}`)
@@ -132,7 +132,7 @@ func TestOptimImageFromData(t *testing.T) {
 
 	t.Run("optim jpeg", func(t *testing.T) {
 		assert := assert.New(t)
-		c := elton.NewContext(nil, nil)
+		c := elton.NewContext(nil, httptest.NewRequest("GET", "/", nil))
 		c.RequestBody = []byte(`{
 			"data": "` + jpegBase64 + `",
 			"source": "jpeg"
@@ -211,7 +211,7 @@ func TestOptimTextFromURL(t *testing.T) {
 func TestOptimTextFromData(t *testing.T) {
 	t.Run("text is nil", func(t *testing.T) {
 		assert := assert.New(t)
-		c := elton.NewContext(nil, nil)
+		c := elton.NewContext(nil, httptest.NewRequest("GET", "/", nil))
 		c.RequestBody = []byte(`{}`)
 		err := optimTextFromData(c)
 		assert.Equal(errTextIsNil, err)
@@ -219,7 +219,7 @@ func TestOptimTextFromData(t *testing.T) {
 
 	t.Run("invalid output", func(t *testing.T) {
 		assert := assert.New(t)
-		c := elton.NewContext(nil, nil)
+		c := elton.NewContext(nil, httptest.NewRequest("GET", "/", nil))
 		c.RequestBody = []byte(`{
 			"data": "abcd",
 			"output": "zz"
@@ -230,7 +230,7 @@ func TestOptimTextFromData(t *testing.T) {
 
 	t.Run("gzip", func(t *testing.T) {
 		assert := assert.New(t)
-		c := elton.NewContext(nil, nil)
+		c := elton.NewContext(nil, httptest.NewRequest("GET", "/", nil))
 		c.RequestBody = []byte(`{
 			"data": "abce",
 			"output": "gzip"
@@ -242,7 +242,7 @@ func TestOptimTextFromData(t *testing.T) {
 
 	t.Run("brotli", func(t *testing.T) {
 		assert := assert.New(t)
-		c := elton.NewContext(nil, nil)
+		c := elton.NewContext(nil, httptest.NewRequest("GET", "/", nil))
 		c.RequestBody = []byte(`{
 			"data": "abce",
 			"output": "br"
