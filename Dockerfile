@@ -8,8 +8,8 @@ ENV MOZJPEG_VERSION=4.0.3
 
 RUN apt-get update \
   && apt-get install -y git cmake libpng-dev autoconf automake libtool nasm make wget \
-  && wget "https://github.com/kornelski/cavif-rs/releases/download/v$CAVIF_VERSION/cavif_$CAVIF_VERSION_amd64.deb" \
-  && dpkg -i "cavif_$CAVIF_VERSION_amd64.deb" \
+  && wget "https://github.com/kornelski/cavif-rs/releases/download/v1.3.1/cavif_1.3.1_amd64.deb" -O cavif.deb \
+  && dpkg -i cavif.deb \
   && git clone -b "$PNGQUANT_VERSION" --depth=1 https://github.com/kornelski/pngquant.git /pngquant \
   && cd /pngquant \
   && make && make install \
