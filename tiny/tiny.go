@@ -16,6 +16,7 @@ package tiny
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"image"
 	"image/jpeg"
@@ -259,7 +260,7 @@ func ImageCrop(img image.Image, cropType CropType, width, height int) image.Imag
 }
 
 // ImageOptim image optim
-func ImageOptim(buf []byte, sourceType, outputType EncodeType, cropType CropType, quality, width, height int) (imgInfo *Image, err error) {
+func ImageOptim(ctx context.Context, buf []byte, sourceType, outputType EncodeType, cropType CropType, quality, width, height int) (imgInfo *Image, err error) {
 	img, err := imageDecode(buf, sourceType)
 	if err != nil {
 		return
@@ -275,11 +276,11 @@ func ImageOptim(buf []byte, sourceType, outputType EncodeType, cropType CropType
 	var data []byte
 	switch outputType {
 	case EncodeTypeJPEG:
-		data, err = JPEGEncode(img, quality)
+		data, err = JPEGEncode(ctx, img, quality)
 	case EncodeTypePNG:
-		data, err = PNGEncode(img, quality)
+		data, err = PNGEncode(ctx, img, quality)
 	case EncodeTypeAVIF:
-		data, err = AVIFEncode(img, quality)
+		data, err = AVIFEncode(ctx, img, quality)
 	case EncodeTypeWEBP:
 		data, err = WEBPEncode(img, quality)
 	default:

@@ -15,6 +15,7 @@
 package tiny
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -24,7 +25,7 @@ func TestJPEGEncode(t *testing.T) {
 	assert := assert.New(t)
 	img := getTestImage()
 
-	data, err := JPEGEncode(img, 0)
+	data, err := JPEGEncode(context.Background(), img, 0)
 	assert.Nil(err)
 	assert.NotEqual(0, len(data))
 }

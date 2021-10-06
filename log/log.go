@@ -15,27 +15,30 @@
 package log
 
 import (
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
+	"os"
+
+	"github.com/rs/zerolog"
 )
 
-var (
-	defaultLogger *zap.Logger
-)
+var defaultLogger = newLogger()
 
-func init() {
-	c := zap.NewProductionConfig()
-	c.DisableCaller = true
-	c.EncoderConfig.EncodeTime = zapcore.ISO8601TimeEncoder
-	// 只针对panic 以上的日志增加stack trace
-	l, err := c.Build(zap.AddStacktrace(zap.DPanicLevel))
-	if err != nil {
-		panic(err)
-	}
-	defaultLogger = l
+func newLogger() *zerolog.Logger {
+
+	// 如果要节约日志空间，可以配置
+	zerolog.TimestampFieldName = "t"
+	zerolog.LevelFieldName = "l"
+	zerolog.TimeFieldFormat = "2006-01-02T15:04:05.999Z07:00"
+
+	l := zerolog.New(os.Stdout).
+		Level(zerolog.InfoLevel).
+		With().
+		Timestamp().
+		Logger()
+
+	return &l
 }
 
 // Default get default logger
-func Default() *zap.Logger {
+func Default() *zerolog.Logger {
 	return defaultLogger
 }

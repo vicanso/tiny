@@ -4,6 +4,7 @@
 
 - `png` PNG的优化处理使用`pngquant`
 - `jpeg` JEPG的优化处理使用`mozjpeg`
+- `avif` AVIF的优化处理使用`cavif`
 
 - 图片输出支持`webp`, `jpeg`, `png`, `avif`
 - 数据压缩输出支持`brotli`, `gzip`, `snappy`, `lz4`, `zstd`

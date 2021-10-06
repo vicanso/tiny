@@ -16,13 +16,14 @@ package tiny
 
 import (
 	"bytes"
+	"context"
 	"image"
 	"image/png"
 	"strconv"
 )
 
 // PNGEncode png encode
-func PNGEncode(img image.Image, quality int) (data []byte, err error) {
+func PNGEncode(ctx context.Context, img image.Image, quality int) (data []byte, err error) {
 	if quality <= minPNGQuality || quality > maxPNGQuality {
 		quality = defaultPNGQuality
 	}
@@ -43,7 +44,7 @@ func PNGEncode(img image.Image, quality int) (data []byte, err error) {
 		}
 	}
 	fileBuffer := new(bytes.Buffer)
-	err = doCommandConvert(w.Bytes(), fn, fileBuffer)
+	err = doCommandConvert(ctx, w.Bytes(), fn, fileBuffer)
 	if err != nil {
 		return
 	}

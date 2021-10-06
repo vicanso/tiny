@@ -2,14 +2,18 @@ FROM golang:1.17 as builder
 
 ADD . /tiny
 
+ENV CAVIF_VERSION=1.3.1
+ENV PNGQUANT_VERSION=2.16.0
+ENV MOZJPEG_VERSION=4.0.3
+
 RUN apt-get update \
   && apt-get install -y git cmake libpng-dev autoconf automake libtool nasm make wget \
-  && wget https://github.com/kornelski/cavif-rs/releases/download/v0.6.6/cavif_0.6.6_amd64.deb \
-  && dpkg -i cavif_0.6.6_amd64.deb \
-  && git clone -b 2.15.1 --depth=1 https://github.com/kornelski/pngquant.git /pngquant \
+  && wget https://github.com/kornelski/cavif-rs/releases/download/v$CAVIF_VERSION/cavif_$CAVIF_VERSION_amd64.deb \
+  && dpkg -i cavif_$CAVIF_VERSION_amd64.deb \
+  && git clone -b $PNGQUANT_VERSION --depth=1 https://github.com/kornelski/pngquant.git /pngquant \
   && cd /pngquant \
   && make && make install \
-  && git clone -b v4.0.3 --depth=1 https://github.com/mozilla/mozjpeg.git /mozjpeg \
+  && git clone -b v$MOZJPEG_VERSION --depth=1 https://github.com/mozilla/mozjpeg.git /mozjpeg \
   && cd /mozjpeg \
   && mkdir build \
   && cd build \

@@ -16,12 +16,13 @@ package tiny
 
 import (
 	"bytes"
+	"context"
 	"image"
 	"image/png"
 	"strconv"
 )
 
-func AVIFEncode(img image.Image, quality int) (data []byte, err error) {
+func AVIFEncode(ctx context.Context, img image.Image, quality int) (data []byte, err error) {
 	if quality <= minAvifQuality || quality > maxAvifQuality {
 		quality = defaultAvifQuality
 	}
@@ -42,7 +43,7 @@ func AVIFEncode(img image.Image, quality int) (data []byte, err error) {
 		}
 	}
 	fileBuffer := new(bytes.Buffer)
-	err = doCommandConvert(w.Bytes(), fn, fileBuffer)
+	err = doCommandConvert(ctx, w.Bytes(), fn, fileBuffer)
 	if err != nil {
 		return
 	}

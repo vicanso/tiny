@@ -16,6 +16,7 @@ package tiny
 
 import (
 	"bytes"
+	"context"
 	"io/ioutil"
 	"math/rand"
 	"os"
@@ -52,7 +53,7 @@ func randomString(baseLetters string, n int) string {
 	return string(b)
 }
 
-func doCommandConvert(data []byte, fn Commander, writer *bytes.Buffer) (err error) {
+func doCommandConvert(ctx context.Context, data []byte, fn Commander, writer *bytes.Buffer) (err error) {
 	filename := randomString(letterBytes, 10)
 	tmpfile, err := ioutil.TempFile("", filename)
 	if err != nil {
@@ -68,7 +69,7 @@ func doCommandConvert(data []byte, fn Commander, writer *bytes.Buffer) (err erro
 	}
 	targetFile := originalFile + "-new"
 	args := fn(originalFile, targetFile)
-	cmd := exec.Command(args[0], args[1:]...)
+	cmd := exec.CommandContext(ctx, args[0], args[1:]...)
 	err = cmd.Run()
 	if err != nil {
 		return

@@ -16,13 +16,14 @@ package tiny
 
 import (
 	"bytes"
+	"context"
 	"image"
 	"image/jpeg"
 	"strconv"
 )
 
 // JPEGEncode jpeg encode
-func JPEGEncode(img image.Image, quality int) (data []byte, err error) {
+func JPEGEncode(ctx context.Context, img image.Image, quality int) (data []byte, err error) {
 	if quality <= minJPEGQuality || quality > maxJPEGQuality {
 		quality = defaultJEPGQuality
 	}
@@ -44,7 +45,7 @@ func JPEGEncode(img image.Image, quality int) (data []byte, err error) {
 		}
 	}
 	fileBuffer := new(bytes.Buffer)
-	err = doCommandConvert(w.Bytes(), fn, fileBuffer)
+	err = doCommandConvert(ctx, w.Bytes(), fn, fileBuffer)
 	if err != nil {
 		return
 	}

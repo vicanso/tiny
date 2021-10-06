@@ -16,6 +16,7 @@ package tiny
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"image"
 	"image/png"
@@ -46,7 +47,7 @@ func TestImageDecode(t *testing.T) {
 	originalImage := getTestImage()
 	t.Run("unknown image type decode", func(t *testing.T) {
 		assert := assert.New(t)
-		data, err := JPEGEncode(originalImage, 10)
+		data, err := JPEGEncode(context.Background(), originalImage, 10)
 		assert.Nil(err)
 		assert.NotNil(data)
 		img, err := imageDecode(data, EncodeTypeUnknown)
@@ -66,7 +67,7 @@ func TestImageDecode(t *testing.T) {
 
 	t.Run("png decode", func(t *testing.T) {
 		assert := assert.New(t)
-		data, err := PNGEncode(originalImage, 10)
+		data, err := PNGEncode(context.Background(), originalImage, 10)
 		assert.Nil(err)
 		assert.NotNil(data)
 		img, err := imageDecode(data, EncodeTypePNG)
@@ -76,7 +77,7 @@ func TestImageDecode(t *testing.T) {
 
 	t.Run("jpeg decode", func(t *testing.T) {
 		assert := assert.New(t)
-		data, err := JPEGEncode(originalImage, 10)
+		data, err := JPEGEncode(context.Background(), originalImage, 10)
 		assert.Nil(err)
 		assert.NotNil(data)
 		img, err := imageDecode(data, EncodeTypeJPEG)
@@ -171,7 +172,7 @@ func TestImageOptim(t *testing.T) {
 	originalData, _ := base64.StdEncoding.DecodeString(pngBase64)
 	t.Run("convert to webp", func(t *testing.T) {
 		assert := assert.New(t)
-		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypeWEBP, CropNone, 0, 0, 0)
+		img, err := ImageOptim(context.Background(), originalData, EncodeTypePNG, EncodeTypeWEBP, CropNone, 0, 0, 0)
 		assert.Nil(err)
 		assert.Equal(pngWidth, img.Width)
 		assert.Equal(pngHeight, img.Height)
@@ -182,7 +183,7 @@ func TestImageOptim(t *testing.T) {
 		assert := assert.New(t)
 		width := 40
 		height := 20
-		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypeJPEG, CropNone, 0, width, height)
+		img, err := ImageOptim(context.Background(), originalData, EncodeTypePNG, EncodeTypeJPEG, CropNone, 0, width, height)
 		assert.Nil(err)
 		assert.Equal(width, img.Width)
 		assert.Equal(height, img.Height)
@@ -193,7 +194,7 @@ func TestImageOptim(t *testing.T) {
 		assert := assert.New(t)
 		width := 20
 		height := 0
-		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypePNG, CropNone, 0, width, height)
+		img, err := ImageOptim(context.Background(), originalData, EncodeTypePNG, EncodeTypePNG, CropNone, 0, width, height)
 		assert.Nil(err)
 		assert.Equal(width, img.Width)
 		assert.Equal(10, img.Height)
@@ -204,7 +205,7 @@ func TestImageOptim(t *testing.T) {
 		assert := assert.New(t)
 		width := 20
 		height := 0
-		img, err := ImageOptim(originalData, EncodeTypePNG, EncodeTypePNG, CropLeftTop, 0, width, height)
+		img, err := ImageOptim(context.Background(), originalData, EncodeTypePNG, EncodeTypePNG, CropLeftTop, 0, width, height)
 		assert.Nil(err)
 		assert.Equal(width, img.Width)
 		assert.Equal(pngHeight, img.Height)

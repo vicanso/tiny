@@ -30,7 +30,6 @@ import (
 	"github.com/vicanso/hes"
 	"github.com/vicanso/tiny/log"
 	"github.com/vicanso/tiny/tiny"
-	"go.uber.org/zap"
 )
 
 type (
@@ -124,7 +123,7 @@ func optimImageFromURL(c *elton.Context) (err error) {
 	height := getIntValue(c, "height")
 	quality := getIntValue(c, "quality")
 	cropType := tiny.CropType(getIntValue(c, "crop"))
-	imgInfo, err := tiny.ImageOptim(resp.Data, encodeType, outputType, cropType, quality, width, height)
+	imgInfo, err := tiny.ImageOptim(c.Context(), resp.Data, encodeType, outputType, cropType, quality, width, height)
 	if err != nil {
 		return
 	}
@@ -158,7 +157,7 @@ func optimImageFromData(c *elton.Context) (err error) {
 	if outputType == tiny.EncodeTypeUnknown {
 		outputType = encodeType
 	}
-	imgInfo, err := tiny.ImageOptim(data, encodeType, outputType, params.Crop, params.Quality, params.Width, params.Height)
+	imgInfo, err := tiny.ImageOptim(c.Context(), data, encodeType, outputType, params.Crop, params.Quality, params.Width, params.Height)
 	if err != nil {
 		return
 	}
@@ -223,7 +222,6 @@ func optimTextFromData(c *elton.Context) (err error) {
 
 // NewHTTPServer new a http server
 func NewHTTPServer(address string) error {
-	logger := log.Default()
 	d := elton.New()
 	d.EnableTrace = true
 	d.OnTrace(func(c *elton.Context, traceInfos elton.TraceInfos) {
@@ -231,11 +229,12 @@ func NewHTTPServer(address string) error {
 	})
 	d.OnError(func(c *elton.Context, err error) {
 		// 可以针对实际场景输出更多的日志信息
-		logger.DPanic("exception",
-			zap.String("ip", c.RealIP()),
-			zap.String("uri", c.Request.RequestURI),
-			zap.Error(err),
-		)
+		log.Default().Panic().
+			Str("category", "exception").
+			Str("ip", c.RealIP()).
+			Str("uri", c.Request.RequestURI).
+			Err(err).
+			Msg("")
 	})
 
 	// 捕捉panic异常，避免程序崩溃
@@ -280,8 +279,9 @@ func NewHTTPServer(address string) error {
 
 	d.SetFunctionName(optimTextFromData, "optim-text-data")
 	d.POST("/texts/optim", optimTextFromData)
-	logger.Info("http server is listening",
-		zap.String("address", address),
-	)
+	log.Default().Info().
+		Str("adddress", address).
+		Msg("http server is listening")
+
 	return d.ListenAndServe(address)
 }
