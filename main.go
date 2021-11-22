@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"runtime"
 
 	"github.com/vicanso/tiny/server"
 )
@@ -22,8 +23,6 @@ var (
 	Version string
 	// BuildAt build at
 	BuildAt string
-	// GO go version
-	GO string
 )
 
 func main() {
@@ -33,7 +32,7 @@ func main() {
 
 	flag.Parse()
 	if showVersion {
-		fmt.Printf("version %s\nbuild at %s\n%s\n", Version, BuildAt, GO)
+		fmt.Printf("version %s\nbuild at %s\n%s\n", Version, BuildAt, runtime.Version())
 		return
 	}
 

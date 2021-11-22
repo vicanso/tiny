@@ -2,9 +2,9 @@
 
 提供图片的转换处理以及文本的压缩，有`HTTP`与`GRPC`的调用方式，建议配合[tiny-site](https://github.com/vicanso/tiny-site)使用。
 
-- `png` PNG的优化处理使用`pngquant`
-- `jpeg` JEPG的优化处理使用`mozjpeg`
-- `avif` AVIF的优化处理使用`cavif`
+- `png` PNG的优化处理使用[pngquant](https://github.com/kornelski/pngquant)
+- `jpeg` JEPG的优化处理使用[mozjpeg](https://github.com/mozilla/mozjpeg)
+- `avif` AVIF的优化处理使用[cavif](https://github.com/kornelski/cavif-rs)
 
 - 图片输出支持`webp`, `jpeg`, `png`, `avif`
 - 数据压缩输出支持`brotli`, `gzip`, `snappy`, `lz4`, `zstd`
@@ -33,7 +33,7 @@ docker run -d --restart=always \
 
 其中7001提供HTTP服务，7002提供GRPC服务。
 
-### 示例
+### 示例
 
 以brotli方式压缩文件（需要注意，只有HTTPS或者以IP形式打开，chrome才支持br）：
 
