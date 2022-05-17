@@ -4,7 +4,7 @@ ARG TARGETARCH
 
 ENV CAVIF_VERSION=1.3.4
 
-RUN wget https://github.com/kornelski/cavif-rs/releases/tag/v${CAVIF_VERSION} \
+RUN wget https://github.com/kornelski/cavif-rs/releases/tag/v${CAVIF_VERSION}.tar.gz \
   && tar -xzvf v${CAVIF_VERSION}.tar.gz cavif-rs \
   cd cavif-rs \
   && cargo build --release
