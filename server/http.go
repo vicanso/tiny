@@ -225,6 +225,8 @@ func NewHTTPServer(address string) error {
 	d := elton.New()
 	d.EnableTrace = true
 	d.OnTrace(func(c *elton.Context, traceInfos elton.TraceInfos) {
+		// 过滤处理时长大于10ms的
+		traceInfos = traceInfos.FilterDurationGT(10 * time.Millisecond)
 		c.SetHeader(elton.HeaderServerTiming, traceInfos.ServerTiming("tiny-"))
 	})
 	d.OnError(func(c *elton.Context, err error) {

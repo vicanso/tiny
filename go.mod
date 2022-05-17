@@ -8,14 +8,14 @@ require (
 	github.com/disintegration/imaging v1.6.2
 	github.com/golang/protobuf v1.5.2
 	github.com/golang/snappy v0.0.4
-	github.com/klauspost/compress v1.15.2
+	github.com/klauspost/compress v1.15.4
 	github.com/pierrec/lz4 v2.6.1+incompatible
 	github.com/rs/zerolog v1.26.1
 	github.com/stretchr/testify v1.7.1
-	github.com/vicanso/elton v1.9.1
-	github.com/vicanso/go-axios v1.4.1
-	github.com/vicanso/hes v0.5.0
-	google.golang.org/grpc v1.46.0
+	github.com/vicanso/elton v1.9.2
+	github.com/vicanso/go-axios v1.4.3
+	github.com/vicanso/hes v0.5.1
+	google.golang.org/grpc v1.46.2
 )
 
 require (
@@ -30,11 +30,11 @@ require (
 	github.com/vicanso/intranet-ip v0.1.0 // indirect
 	github.com/vicanso/keygrip v1.2.1 // indirect
 	golang.org/x/image v0.0.0-20220413100746-70e8d0d3baa9 // indirect
-	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
-	golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6 // indirect
+	golang.org/x/net v0.0.0-20220513224357-95641704303c // indirect
+	golang.org/x/sys v0.0.0-20220513210249-45d2b4557a2a // indirect
 	golang.org/x/text v0.3.7 // indirect
-	google.golang.org/genproto v0.0.0-20220503193339-ba3ae3f07e29 // indirect
+	google.golang.org/genproto v0.0.0-20220505152158-f39f71e6c8f3 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
+	gopkg.in/yaml.v3 v3.0.0-20220512140231-539c8e751b99 // indirect
 )
