@@ -7,7 +7,7 @@ ENV CAVIF_VERSION=1.3.4
 RUN wget https://github.com/kornelski/cavif-rs/releases/tag/v${CAVIF_VERSION} \
   && tar -xzvf v${CAVIF_VERSION}.tar.gz cavif-rs \
   cd cavif-rs \
-  && cargo install cavif
+  && cargo build --release
 
 FROM golang:1.18 as builder
 
@@ -20,8 +20,6 @@ ENV MOZJPEG_VERSION=4.0.3
 
 RUN apt-get update \
   && apt-get install -y git cmake libpng-dev autoconf automake libtool nasm make wget \
-  && wget "https://github.com/kornelski/cavif-rs/releases/download/v${CAVIF_VERSION}/cavif_${CAVIF_VERSION}_${TARGETARCH}.deb" -O cavif.deb \
-  && dpkg -i cavif.deb \
   && git clone -b "$PNGQUANT_VERSION" --depth=1 https://github.com/kornelski/pngquant.git /pngquant \
   && cd /pngquant \
   && make && make install \
@@ -48,7 +46,7 @@ COPY --from=builder /mozjpeg/build/libjpeg.so.62 /usr/local/lib/
 
 COPY --from=builder /tiny/tiny-server /usr/local/bin/tiny-server
 
-COPY --from=builder /usr/bin/cavif /usr/local/bin/cavif
+COPY --from=rustbuilder /cavif-rs/target/release/cavif /usr/local/bin/cavif
 
 ENV LD_LIBRARY_PATH /usr/local/lib
 
