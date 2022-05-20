@@ -15,7 +15,6 @@ FROM golang:1.18 as builder
 ARG TARGETARCH
 ADD . /tiny
 
-ENV CAVIF_VERSION=1.3.3
 ENV PNGQUANT_VERSION=2.17.0
 ENV MOZJPEG_VERSION=4.0.3
 
@@ -23,7 +22,7 @@ RUN apt-get update \
   && apt-get install -y git cmake libpng-dev autoconf automake libtool nasm make wget \
   && git clone -b "$PNGQUANT_VERSION" --depth=1 https://github.com/kornelski/pngquant.git /pngquant \
   && cd /pngquant \
-  && make && make install \
+  && ./configure --extra-ldflags=-static && make install \
   && git clone -b "v$MOZJPEG_VERSION" --depth=1 https://github.com/mozilla/mozjpeg.git /mozjpeg \
   && cd /mozjpeg \
   && mkdir build \
@@ -41,15 +40,11 @@ EXPOSE 7001
 EXPOSE 7002
 
 COPY --from=builder /usr/local/bin/pngquant /usr/local/bin/
-COPY --from=builder /usr/lib/x86_64-linux-gnu/libpng16.so.16 /usr/local/lib/
-COPY --from=builder /mozjpeg/build/cjpeg /usr/local/bin/ 
-COPY --from=builder /mozjpeg/build/libjpeg.so.62 /usr/local/lib/
+COPY --from=builder /mozjpeg/build/cjpeg-static /usr/local/bin/cjpeg
 
 COPY --from=builder /tiny/tiny-server /usr/local/bin/tiny-server
 
 COPY --from=rustbuilder /cavif-rs/target/release/cavif /usr/local/bin/cavif
-
-ENV LD_LIBRARY_PATH /usr/local/lib
 
 RUN apt-get update \
   && apt-get install -y ca-certificates netcat \

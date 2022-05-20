@@ -53,9 +53,11 @@ func randomString(baseLetters string, n int) string {
 	return string(b)
 }
 
+var tmpDir = os.Getenv("TINY_TMP_DIR")
+
 func doCommandConvert(ctx context.Context, data []byte, fn Commander, writer *bytes.Buffer) (err error) {
 	filename := randomString(letterBytes, 10)
-	tmpfile, err := ioutil.TempFile("", filename)
+	tmpfile, err := ioutil.TempFile(tmpDir, filename)
 	if err != nil {
 		return
 	}
