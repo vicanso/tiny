@@ -22,7 +22,7 @@ RUN apt-get update \
   && apt-get install -y git cmake libpng-dev autoconf automake libtool nasm make wget \
   && git clone -b "$PNGQUANT_VERSION" --depth=1 https://github.com/kornelski/pngquant.git /pngquant \
   && cd /pngquant \
-  && ./configure --extra-ldflags=-static && make install \
+  && ./configure --extra-ldflags=-static --disable-sse && make install \
   && git clone -b "v$MOZJPEG_VERSION" --depth=1 https://github.com/mozilla/mozjpeg.git /mozjpeg \
   && cd /mozjpeg \
   && mkdir build \
