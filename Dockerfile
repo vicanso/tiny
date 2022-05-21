@@ -4,7 +4,9 @@ ARG TARGETARCH
 
 ENV CAVIF_VERSION=1.3.4
 
-RUN wget https://github.com/kornelski/cavif-rs/archive/refs/tags/v${CAVIF_VERSION}.tar.gz \
+RUN apt-get update -y \
+  && apt-get install -y nasm \
+  && wget https://github.com/kornelski/cavif-rs/archive/refs/tags/v${CAVIF_VERSION}.tar.gz \
   && tar -xzvf v${CAVIF_VERSION}.tar.gz \
   && mv cavif-rs-${CAVIF_VERSION} cavif-rs \
   && cd cavif-rs \
