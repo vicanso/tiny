@@ -3,6 +3,8 @@ FROM rust:1.60.0 as rustbuilder
 ARG TARGETARCH
 
 ENV CAVIF_VERSION=1.3.4
+ENV PNGQUANT_VERSION=2.17.0
+
 
 RUN apt-get update -y \
   && apt-get install -y nasm \
@@ -10,6 +12,9 @@ RUN apt-get update -y \
   && tar -xzvf v${CAVIF_VERSION}.tar.gz \
   && mv cavif-rs-${CAVIF_VERSION} cavif-rs \
   && cd cavif-rs \
+  && cargo build --release \
+  && git clone -b "$PNGQUANT_VERSION" --recursive https://github.com/kornelski/pngquant.git /pngquant/ \
+  && cd /pngquant/ \
   && cargo build --release
 
 FROM golang:1.18 as builder
@@ -17,14 +22,10 @@ FROM golang:1.18 as builder
 ARG TARGETARCH
 ADD . /tiny
 
-ENV PNGQUANT_VERSION=2.17.0
 ENV MOZJPEG_VERSION=4.0.3
 
 RUN apt-get update \
   && apt-get install -y git cmake libpng-dev autoconf automake libtool nasm make wget \
-  && git clone -b "$PNGQUANT_VERSION" --depth=1 https://github.com/kornelski/pngquant.git /pngquant \
-  && cd /pngquant \
-  && ./configure --extra-ldflags=-static --disable-sse && make install \
   && git clone -b "v$MOZJPEG_VERSION" --depth=1 https://github.com/mozilla/mozjpeg.git /mozjpeg \
   && cd /mozjpeg \
   && mkdir build \
@@ -41,12 +42,12 @@ FROM ubuntu
 EXPOSE 7001
 EXPOSE 7002
 
-COPY --from=builder /usr/local/bin/pngquant /usr/local/bin/
 COPY --from=builder /mozjpeg/build/cjpeg-static /usr/local/bin/cjpeg
 
 COPY --from=builder /tiny/tiny-server /usr/local/bin/tiny-server
 
 COPY --from=rustbuilder /cavif-rs/target/release/cavif /usr/local/bin/cavif
+COPY --from=rustbuilder /pngquant/target/release/pngquant /usr/local/bin/pngquant
 
 RUN apt-get update \
   && apt-get install -y ca-certificates netcat \
