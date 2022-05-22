@@ -15,7 +15,7 @@ RUN apt-get update -y \
   && cargo build --release \
   && git clone -b "$PNGQUANT_VERSION" --recursive https://github.com/kornelski/pngquant.git /pngquant/ \
   && cd /pngquant/ \
-  && cargo build --release
+  && cargo build --release --features=static
 
 FROM golang:1.18 as builder
 
