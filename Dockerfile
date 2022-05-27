@@ -10,7 +10,7 @@ RUN apt-get update -y \
   && tar -xzvf v${CAVIF_VERSION}.tar.gz \
   && mv cavif-rs-${CAVIF_VERSION} cavif-rs \
   && cd cavif-rs \
-  && cargo build --release
+  && cargo build --release --verbose
 
 # FROM golang:1.18 as builder
 
