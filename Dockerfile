@@ -3,6 +3,7 @@ FROM rust:1.60.0 as rustbuilder
 ARG TARGETARCH
 
 ENV CAVIF_VERSION=1.3.4
+ENV RUSTC_BOOTSTRAP=1
 
 RUN apt-get update -y \
   && apt-get install -y nasm \
