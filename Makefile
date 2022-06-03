@@ -13,7 +13,7 @@ protoc:
 # for test
 test: export GO_ENV=test
 test:
-	go test -race -cover ./...
+	go test -cover ./...
 
 test-cover: export GO_ENV=test
 test-cover:
