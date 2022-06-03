@@ -3,7 +3,6 @@ FROM rust:1.60.0 as rustbuilder
 ARG TARGETARCH
 
 ENV CAVIF_VERSION=1.3.4
-ENV RUSTC_BOOTSTRAP=1
 
 RUN apt-get update -y \
   && apt-get install -y nasm \
@@ -11,7 +10,7 @@ RUN apt-get update -y \
   && tar -xzvf v${CAVIF_VERSION}.tar.gz \
   && mv cavif-rs-${CAVIF_VERSION} cavif-rs \
   && cd cavif-rs \
-  && cargo build --release
+  && cargo build -j1 --release
 
 FROM golang:1.18 as builder
 
