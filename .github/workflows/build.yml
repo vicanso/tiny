@@ -11,6 +11,10 @@ jobs:
     runs-on: ubuntu-18.04
     name: Build
     steps:
+    - name: Set Swap Space to 10GB
+      uses: pierotofy/set-swap-space@v1.0
+      with:
+        swap-size-gb: 10
     - name: Check out code into the Go module directory
       uses: actions/checkout@v2
     - name: Set output

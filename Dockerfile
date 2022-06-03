@@ -10,7 +10,7 @@ RUN apt-get update -y \
   && tar -xzvf v${CAVIF_VERSION}.tar.gz \
   && mv cavif-rs-${CAVIF_VERSION} cavif-rs \
   && cd cavif-rs \
-  && RUSTFLAGS="-C symbol-manging-version=v0" cargo build --release
+  && cargo build --release
 
 FROM golang:1.18 as builder
 
