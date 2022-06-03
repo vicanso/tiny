@@ -1,4 +1,4 @@
-FROM rust:1.60.0 as rustbuilder
+FROM rust:1.61.0 as rustbuilder
 
 ARG TARGETARCH
 
