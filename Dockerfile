@@ -1,4 +1,4 @@
-FROM rust:1.40.0 as rustbuilder
+FROM rust:1.61.0 as rustbuilder
 
 ARG TARGETARCH
 
@@ -10,7 +10,7 @@ RUN apt-get update -y \
   && tar -xzvf v${CAVIF_VERSION}.tar.gz \
   && mv cavif-rs-${CAVIF_VERSION} cavif-rs \
   && cd cavif-rs \
-  && cargo build --release
+  && RUSTFLAGS="-C symbol-manging-version=v0" cargo build --release
 
 FROM golang:1.18 as builder
 
