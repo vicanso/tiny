@@ -12,7 +12,7 @@ RUN apt-get update -y \
   && cd cavif-rs \
   && cargo build --release
 
-FROM golang:1.18 as builder
+FROM golang:1.20 as builder
 
 ARG TARGETARCH
 ADD . /tiny

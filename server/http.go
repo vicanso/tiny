@@ -20,10 +20,12 @@ import (
 	"encoding/json"
 	"errors"
 	"mime"
+	"os"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/vicanso/elton"
 	M "github.com/vicanso/elton/middleware"
 	"github.com/vicanso/go-axios"
@@ -255,9 +257,18 @@ func NewHTTPServer(address string) error {
 	d.SetFunctionName(fn, "-")
 	d.Use(fn)
 
+	limitStr := os.Getenv("TINY_BODY_PARSER_LIMIT")
+	limit := 0
+	if limitStr != "" {
+		v, _ := humanize.ParseBytes(limitStr)
+		limit = int(v)
+	}
+	// 限制默认最大1MB
+	if limit <= 0 {
+		limit = 1000 * 1000
+	}
 	bodyparserConf := M.BodyParserConfig{
-		// 限制最大1MB
-		Limit: 1024 * 1024,
+		Limit: limit,
 	}
 	bodyparserConf.AddDecoder(M.NewJSONDecoder())
 

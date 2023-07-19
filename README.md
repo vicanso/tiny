@@ -31,7 +31,7 @@ docker run -d --restart=always \
   vicanso/tiny
 ```
 
-其中7001提供HTTP服务，7002提供GRPC服务。
+其中7001提供HTTP服务，7002提供GRPC服务，默认http body限制为1MB，如果需要调整，可通过ENV来调整，如`TINY_BODY_PARSER_LIMIT=10MB`
 
 ### 示例
 
